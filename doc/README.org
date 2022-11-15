@@ -1,0 +1,38 @@
+This directory is for published, tracked documentation.
+
+For random notes, see file:../notes
+
+* To generate
+
+This process translates the .org source into HTML, so it can be displayed in the web UI (see https://rawsugar.parkerici.org/user-guide)
+
+Alternatively, the equivalent translation is done automatically by Github and available at https://github.com/ParkerICI/rawsugar/blob/master/doc/user-guide.org . 
+
+#+begin_src 
+bin/compile-user-guide.sh
+#+end_src
+
+
+**  To update schema.dot.png
+
+If schema has changed:
+*** In a Rawsugar shell
+#+begin_src 
+ lein run transact-schema
+#+end_src
+*** In an Alzabo shell
+
+Where <version> is the schema version.
+
+#+begin_src 
+ lein run documentation ../rawsugar/resources/alz-schema.edn
+ cp resources/public/schema/<version>/schema.dot.png ../rawsugar/doc/images
+#+end_src
+
+
+** Generate html
+
+See [[bin/compile-user-guide.sh]]
+
+Generates a file =user-guide.html=
+

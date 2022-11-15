@@ -1,0 +1,13 @@
+;; TODO npm? https://figwheel.org/docs/npm.html
+^{:watch-dirs ["src/cljs" "src/cljc"]
+  :css-dirs ["resources/public/css"]
+  :cljs-devtools true
+;  :npm {:bundles {"dist/index.bundle.js" "src/js/index.js"}}
+  }
+{:main org.parkerici.rawsugar.core
+ :closure-defines {"re_frame.trace.trace_enabled_QMARK_" false}
+ :npm-deps false
+ ;; TODO should be advanced but there is a subtle bad interaction with ag-grid that needs to be fixed.
+ :optimizations :simple
+ :output-to "resources/public/cljs-out/prod-main.js"
+} 

@@ -1,0 +1,105 @@
+#+OPTIONS: html-postamble:nil
+#+TITLE: Rawsugar 3.0 Release Notes
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+
+
+* Introduction
+
+The 3.0 release of Rawsugar (11/2021) has a number of new or redeisgned features; this document attempts to summarize them.
+
+
+* Recipes
+
+Rawsugar 3 introduces the notion of _recipes_, which are datatype-specific workflows. When you declare a batch's datatype, it will also create a recipe, consisting of a series of steps.
+
+Recipes are defined statically via an .edn file, [defined here](https://github.com/ParkerICI/rawsugar/blob/master/resources/recipes.edn). You normally shouldn't have to look at this file, but if you want to examine, add or modify a recipe, this is the place.
+
+Recipes are displayed on the batch page, and look like this:
+[[file:images/image_1637028352431_0.png]]
+
+Each recipe step is represented by a box. with elements:
+    - name
+    - state: todo, in-progress, done, or blocked
+        - steps are blocked until their predecessors are done
+        - you can cycle a steps state by clicking on the state label
+    - op or link
+        - Steps can define an operation or external link, which appears in the second line.
+    - sheet
+        - The sheet selector at the bottom of the step box allows you to select a sheet as the declared output of the step. Sheets that are so declared appear highlighted in the sheet view.
+    - help [[file:images/image_1637187063384_0.png]]
+        - The help icon links to step-specific documentation
+    - notes [[file:images/image_1637187157703_0.png]]
+        - The notes icon lets you add or see notes to a particular step. The icon turns orange if a note is present
+
+
+
+* Immutable sheets with provenance
+
+While the basic structure of sheets have not changed, the way sheets are created and operated on is somewhat different now. Sheets are now _immutable_, and they keep track of their _provenance_. This means that operations that formerly changed sheets will now instead make a new sheet, with a link back to the old one (or multiple ones in the case of joins or unions). For the most part the operations on sheets have not changed, they just create new sheets now.
+
+The result is that sheets form a _graph_ based on these provenance relations, which can be viewed on the batch page in several forms. This should make the history of sheets clearer, and obviate the need for very large, complex sheet names that encode provenance.
+
+** Sheet views
+There are actually three separate ways to view the sheets of a batch, all available as tabs on the batch page. There is also more information about the sheets (such as their size and creation parameters) that is displayed or accessible from the sheet views.
+
+A few graphic conventions are used across the views: the most recently created sheet is highlighted in green, and sheets that have been linked to recipe steps are highlighted in red. In all views, clicking on the sheet name will navigate to that sheet.
+
+*** Graph view
+The graph view is the most direct view of the sheet provenance structure. Sheets appear as colored and labeled nodes; the color indicates what op was used to create the sheet. Graph edges indicate derivation provenance; so in the illustration the bottommost sheet (green text) has been created by a join op from two predecssors.
+	  [[file:images/image_1638392426419_0.png]]
+
+Hovering the mouse on a node will show a popup with additional sheet data.
+
+*** Outline view
+The outline view shows the sheet in a standard HTMLa textual form with links to the ops involved. (The limits of the outline form means that the provenance relationships are necessarily in incomplete for cases where a sheet was created from two or more parent sheets).
+          [[file:images/image_1638392803639_0.png]]
+Sheet lines include the size [rows x columns], creator, and creation time.
+A very useful feature of this view is that the op used to create the sheet is an active link that will bring up the ops dialog that created the sheet. This means you can easily re-run an op with different parameters.
+
+*** Table view
+The table view shows the sheets in a simple  list, with associated properties. This view uses the same ag-grid component that the sheet view uses, which means that the list of sheets can easily be sorted or otherwise manipulated).
+          [[file:images/image_1638392906141_0.png]]
+
+** Changes in file-matching and cell editing UI
+The user interfaces for File matching and Cell editing are a bit different now, to work better with the new sheet model. These now work through a modal interface; meaning you have to enter a mode, perform the operation, and then exit the mode, which will actually record the changes in a new sheet.
+This is controlled by two buttons in the sheet view
+      [[file:images/image_1638393295426_0.png]]
+If you click on Match files, the file view will pop up as before
+      [[file:images/image_1638393382589_0.
+Adding matches will change the affected rows and files display color, but they won't actually be saved until you click the button again (now labeled "Save n matches"):
+      [[file:images/image_1638393360475_0.png]]
+The **Edit cells** button works similarly.
+Note that both these modes will also show a cancel icon [[file:images/image_1638393523454_0.png) next to the button; clicking this will abort out of the operation]]
+
+
+* File view
+There used to be no easy way to see a list of files; this has been remedied with the file view, accesible from the batch page.
+[[file:images/image_1637712741267_0.png]]
+The usual ag-grid sorting and filtering operations are available, and you can use the checkboxes with Ops that operate on files.
+
+
+* Ops changes
+*** Ops dialog has popout
+[[file:images/image_1637192719166_0.png]]
+The new [[file:images/image_1637192752975_0.png]]  icon in the ops header implements a sort of pop-out behavior, so you can see the underlying sheet or other data if you need to (in actually creates a new browser tab for that, so would be more properly called pop-up-from-under]]
+*** More feedback
+
+There are now wait spinners for ops, and other related efforts to have the UI inform the user what is going on.
+*** New ops
+Rename Batch, Rename Project, Rename sheet are new.  
+
+Note that these ops, unlike most others, do not create a new sheet but actually modify an existing one.
+
+*** Upload directory
+The upload ops now have an additional option that allows you to upload a local directory by specifying the folder
+    [[file:images/image_1637719564551_0.png]]
+ In the above dialog you can specify either individual files through the **local-files** argument or a directory through the **local-directory** argument.
+
+
+*** Delete sheet warnings
+
+Since derived sheets now share structure with their parent; deleting a sheet is a bit more fraught. The Delete sheet op will warn the user if there are derived sheets that will also be deleted:
+
+
+
+file:Screen_Shot_2021-12-15_at_10.52.40_AM.png

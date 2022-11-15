@@ -1,0 +1,7 @@
+The file schema.edn is a Datomic schema generated from the high-level schema in src/clj/org/parkerici/rawsugar/schema.clj
+
+It may be out of date, run (org.parkerici.rawsugar.schema/write-schema-file) to force an update.
+
+Confusingly, the file candel-schema.edn is an Alzabo-format schema derived from from Pret.
+
+

@@ -1,0 +1,4 @@
+{:name "IMC"
+ :datatype :datatype.imc
+ :steps
+ [#include "recipes/mesmer.edn"]}

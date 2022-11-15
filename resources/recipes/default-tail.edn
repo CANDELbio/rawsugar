@@ -1,0 +1,7 @@
+{:name "Default recipe tail"
+ :steps
+ [{:id :prepare-for-candel
+   :doc "https://dataplatform.parkerici.org/datatypes/cytometry/#pret-pret"}
+
+  {:id :import-to-candel
+   :doc "https://candel.parkerici.org/importing_data/"}]}

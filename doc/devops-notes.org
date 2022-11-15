@@ -1,0 +1,20 @@
+* Measuring data warehouse usage
+
+bin/config
+
+bin/config.sh prod
+gsutil du gs://pici-data-warehouse > pici-data-warehouse-dudu
+
+3,584,032,598,118
+
+* Cellengine credentials
+
+These expire periodically, mail gets sent to engineering@parkerici.org 
+
+The password is stored in a k8 secret, udpate with:
+
+>  kubectl edit secret cellengine-password
+
+Password has to be base64-encoded,
+
+> echo "akd&7as" | base64

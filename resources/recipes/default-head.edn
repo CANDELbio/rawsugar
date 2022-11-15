@@ -1,0 +1,17 @@
+{:name "Default recipe head"
+ :steps
+ [{:id :upload-manifest                ; :id has to be unique within recipe
+   :description "Upload Excel sheet from Research Ops containing sample info"
+   :op :upload-sheets
+   :doc "https://dataplatform.parkerici.org/rawdata/raw-data-pici-trials/#uploading-sample-manifest"}
+  
+  {:id :upload-data
+   :op :upload-files
+   :description "Upload files from your local machine, GCP or Box"
+   :doc "https://dataplatform.parkerici.org/rawdata/raw-data-pici-trials/#uploading-data-files"}
+  
+  {:id :match
+   :op :match-files
+   :doc "https://dataplatform.parkerici.org/rawdata/raw-data-pici-trials/#matching-files-to-manifest"}
+
+  ]}

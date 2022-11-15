@@ -1,0 +1,8 @@
+{:merge
+ {:a 1
+  :x #merge [{:c {:foo 1 :bar 2}} {:c {:foo 23 :quux 99}}]}
+ :merge*
+ {:a 1
+  :x #merge* [{:c {:foo 1 :bar 2}} {:c {:foo 23 :quux 99}}]}
+ }
+

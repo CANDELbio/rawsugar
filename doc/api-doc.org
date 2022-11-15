@@ -1,0 +1,308 @@
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+
+* Introduction
+
+This describes the Rawsugar v2 API, currently used mostly by the web client, but available for other purposes.
+
+** Changes from V1
+
+V2 has two major changes:
+- some endpoints are eliminated or consolidated
+- all entity arguments (sheets, projects etc) are now supplied as numerical Datomic EIDs rather than strings.
+
+
+** URLs
+
+All URLs are prefixed with =/api/v2=. Eg.
+
+#+BEGIN_SRC
+curl http://localhost:1777/api/v2/projects/list
+#+END_SRC
+
+** Formats
+
+Supported formats are plain JSON (the default) or [[https://github.com/cognitect/transit-format][Transit]]/JSON, a format optimized for transmitting Clojure structures. You can get Transit by supplying the header in the HTTP request:
+#+BEGIN_SRC
+Accept: application/transit+json
+#+END_SRC
+
+** Authentication
+
+TODO. Currently uses OAuth, which works for the web client, but is probably not suitable for other uses. Need to supply a better mechanism.
+
+For now, you can copy a cookie out of the browser and supply it to API calls. Eg:
+
+#+BEGIN_SRC
+curl --cookie "ring-session=335243e2-6233-4e14-858e-3da2ac6084a6" ...
+#+END_SRC
+
+Or, run your own version of Rawsugar started with the =insecure-server= command.
+
+#+BEGIN_SRC
+lein run insecure-server
+#+END_SRC
+
+** Notes on examples
+
+The examples are written against a local copy of Rawsugar, started with the =lein run insecure-server= command. They use the shell utility [[https://stedolan.github.io/jq/][=jq=]] for prettyprinting JSON results.
+
+ [⨈] indicates that the API is in use by the web client. 
+
+* Schema
+
+
+** [⨈] GET /schema
+Returns a schema in [[https://github.com/ParkerICI/alzabo][Alzabo]] form. This is a merged schema combining Rawsugar's own schema with the CANDEL schema.
+
+#+BEGIN_SRC
+curl http://localhost:1777/api/v2/schema | jq
+{
+  "title": "Rawsugar Schema",
+  "version": "2.0",
+  "kinds": {
+    "cell-type": {
+      "parent": null,
+      "unique-id": "cell-type/co-name",
+      "label": "cell-type/co-name",
+      "reference?": true,
+      "fields": {
+        "co-name": {
+          "type": "string",
+          "cardinality": "one",
+          "unique": "identity",
+          "doc": "Cell Ontology name of the cell type, see http://obofoundry.org/ontology/cl.html"
+        },
+...
+#+END_SRC
+
+* Entities
+These API calls can get or update arbitrary Datomic entities. 
+
+** GET /entity/get <id>
+
+Get the entity.
+
+Example using a file entity:
+
+#+BEGIN_SRC
+curl "http://localhost:1777/api/v2/entity/get?id=17592186045422" | jq
+
+{
+  "db/id": 17592186045422,
+  "file/pathname": "../test/resources/proj0/meta.tsv",
+  "file/extension": "tsv",
+  "file/location": "gs://pici-data-warehouse-test/nheeghee/a8c1a051-de18-4437-95f5-e68448abe8b1.tsv",
+  "file/hash": "F55660C1361E0EA4B69A39D0CBB1055EC03325474F6AE234EB7947F921A2A464"
+}
+#+END_SRC
+
+
+** [⨈] POST /update <project> <entity>
+Update the given entity, which must contain a =:db/id=. Can՚t do retractions (except by overwriting single-valued attributes).
+
+* Projects
+
+** [⨈]  GET /projects/data
+
+Returns a map with metadata for all projects, batches, and sheets (basically everything except the actual sheet contents). 
+
+#+BEGIN_SRC
+curl http://localhost:1777/api/v2/projects/data | jq
+
+{
+  "17592186084233": {
+    "db/id": 17592186084233,
+    "project/name": "xenon",
+    "project/batches": {
+      "17592186084236": {
+        "db/id": 17592186084236,
+        "batch/name": "meta",
+        "batch/files": [
+          {
+            "db/id": 17592186084260,
+            "file/pathname": "/unmatched.txt"
+          }
+        ],
+        "batch/sheets": {}
+      },
+      "17592186084270": {
+        "db/id": 17592186084270,
+        "batch/name": "otherbatch",
+        "batch/files": [
+          {
+            "db/id": 17592186084274,
+            "file/pathname": "/misc/repos/pici/rawsugar/test/resources/proj4/meta.tsv"
+          }
+        ],
+        "batch/sheets": {}
+      }
+    },
+...
+#+END_SRC
+
+
+* Sheets
+
+
+** [⨈] GET /sheet/data  <sheet>
+Returns the sheet contents as a sequence of row maps. Each row map maps column eids to values (eg strings or numbers).
+
+The first item in the sequence is actually a seq of column entities (headers, eg). 
+
+#+BEGIN_SRC 
+⪢ curl http://localhost:9500/api/v2/sheet/data?sheet=17592186190724 | jq
+[
+  [
+    {
+      "db/id": 17592186190727,
+      "column/name": "sampleId"
+    },
+    {
+      "db/id": 17592186190728,
+      "column/name": "uniquePopulationName"
+    },
+    {
+      "db/id": 17592186190725,
+      "column/name": "percent"
+    },
+    {
+      "db/id": 17592186190726,
+      "column/name": "eventCount"
+    }
+  ],
+  {
+    "eventCount": 0,
+    "percent": 0,
+    "uniquePopulationName": "Treg > Ki67+",
+    "sampleId": "840-100500-014_panel21_Baseline_4",
+    "files": [],
+    "row-id": 17592186192765
+  },
+  {
+    "sampleId": "840-100200-003_panel21_Baseline_50",
+    "percent": 15.714285850524902,
+    "eventCount": 11,
+    "uniquePopulationName": "Treg > Ki67+",
+    "files": [],
+    "row-id": 17592186197085
+  },
+
+
+#+END_SRC
+
+
+** [⨈] POST /sheet/cell/update <project> <sheet> <row> <column> <value>
+Change the value of a given cell. =row= and =column= are Datomic entity ids, =value= is a storable value (will be coerced into a number if possible, otherwise stored as a string).
+
+** POST /sheet/add-row <project> <sheet> <data>
+
+Add a row to the given sheet. =data= is a serialized, uriencoded map of column names to values. This is in use by Mike՚s text-mining project (that is, it is the current sole API in use by something external to Rawsugar).
+
+#+BEGIN_SRC
+cat > /tmp/row-data
+{"a" "wowza" "b" 23}^D
+
+curl -X POST --data-urlencode data@/tmp/row-data "http://localhost:1777/api/v2/sheet/add-row?project=nheeghee&sheet=meta.tsv"
+
+[{"db/id":17592186085054,"operation/cmd":"add-row","operation/parameters":"(\"nheeghee\" \"meta.tsv\")","operation/agent":"mtravers"}]
+#+END_SRC
+
+** [⨈] POST /sheet/update
+
+   TODO
+
+* Files
+
+Note: You can get metadata for an individual file using the =/entity/get= call.
+
+** GET /file/contents <id>
+
+Returns the contents of a file (download).
+
+#+BEGIN_SRC
+curl http://localhost:1777/api/v2/file/contents?id=17592186045422
+
+a	b	c	fileName
+foo	1	2	foo.txt
+bar	3	4	bar.txt
+#+END_SRC
+
+
+** GET [⨈] /file/list <batch>
+
+Returns a list of file objects.
+
+#+BEGIN_SRC
+curl "http://localhost:1777/api/v2/file/list/?batch=17592186105269" | jq
+
+[
+  {
+    "db/id": 17592186045443,
+    "file/pathname": "/unmatched.txt",
+    "file/extension": "txt",
+    "file/location": "gs://pici-data-warehouse-test/nheeghee/ed521279-b9cc-40e3-9a92-53bdf85e356e.txt",
+    "file/hash": "357649C613CCE5C1A1608BA113B92093370AEBF7695EC063C74257BFECB4737C",
+    "row/_files": [
+      {
+        "db/id": 17592186045437
+      },
+      {
+        "db/id": 17592186045513
+      }
+    ]
+  },
+#+END_SRC
+
+
+
+** [⨈] POST /file/upload
+
+Upload a new file. Response is the id of the new file entity
+
+#+BEGIN_SRC
+curl -X POST -T /some/local/file "http://localhost:1777/api/v2/file/upload?project=17592186109625&batch=17592186105269"
+17592186085005
+#+END_SRC
+
+
+
+** [⨈] POST /file/match/add
+
+TODO
+** [⨈] POST /file/match/remove
+TODO
+
+
+* Operations
+
+** [⨈] GET /ops/list
+
+Get a list of available operations and their arguments.
+
+#+BEGIN_SRC
+curl "http://localhost:1777/api/v2/ops/list" | jq
+
+{
+  "operations": {
+    "rename-project": {
+      "name": "Rename project",
+      "fn": "rename-project",
+      "args": [
+        {
+          "name": "project",
+          "read-only": true
+        },
+        {
+          "name": "new-name"
+        }
+      ],
+      "index-change?": true
+    },
+    "rename-sheet": {
+...
+#+END_SRC
+
+** [⨈] POST /ops/do <project> <op> <param>+
+
+Perform the specified operation.
+

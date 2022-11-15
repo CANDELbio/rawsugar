@@ -1,0 +1,4 @@
+{:name "MIBI"
+ :datatype :datatype.mibi
+ :steps
+ [#include "recipes/mesmer.edn"]}

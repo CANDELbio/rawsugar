@@ -1,0 +1,4 @@
+{:name "Codex"
+ :datatype :datatype.codex
+ :steps
+ [#include "recipes/mesmer.edn"]}

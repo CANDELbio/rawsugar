@@ -1,0 +1,14 @@
+{:proto
+ #index-by
+ [:id
+  {:id :foo :value 1}
+  {:id :bar :value 2 }]
+ :descendant
+; #index-by
+ [:id
+  #proto
+  [[:proto :foo] {:value 11}]
+  #proto
+  [[:proto :bar] {:id :bar
+                  :value 22}]]
+ }

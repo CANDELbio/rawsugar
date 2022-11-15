@@ -1,0 +1,4 @@
+specimenId	collectionDate	origFileName	origFilePath	subjectId	fileType	specimen	panel	timepoint	roi	assay
+K00881FP01	07-Nov-2017	K00881FP01-3rd PICI P21 CD68, Ki67, PDL1, Foxp3, CD8, panCK+CK7+CAM5.2, DAPI_[50208,13658]_component_data.tif	gs://pici0002-prince/PICI Project PANEL 21 on July 2018/Raw Data	840-100100-001	image/tiff	Tissue Blocks	panel21	Baseline	7	vectra
+A00_K00879FP01_SSL_A01	27-Oct-2017	K00879FP01 PICI P26- CD20, CD56, CD3, iNOS, GzmB, panCK+CK7+CAM5.2, DAPI_[48911,13931]_component_data.tif	gs://pici0002-prince/PICI Project PANEL 26 on July 2018/PICI Project PANEL26-2018.7	840-100500-010	image/tiff	Tissue Slides	panel26	Baseline	25	vectra
+A00_K00879FP01_SSL_A01	27-Oct-2017	K00879FP01 PICI P26- CD20, CD56, CD3, iNOS, GzmB, panCK+CK7+CAM5.2, DAPI_[42258,15353]_component_data.tif	gs://pici0002-prince/PICI Project PANEL 26 on July 2018/PICI Project PANEL26-2018.7	840-100500-010	image/tiff	Tissue Slides	panel26	Baseline	5	vectra 

@@ -1,0 +1,14 @@
+;; TODO npm? https://figwheel.org/docs/npm.html
+^{:watch-dirs ["src/cljs" "src/cljc"]
+  :css-dirs ["resources/public/css"]
+  :cljs-devtools true
+  :ring-handler "org.parkerici.rawsugar.handler/insecure-app"
+;  :npm {:bundles {"dist/index.bundle.js" "src/js/index.js"}}
+  :open-url "http://[[server-hostname]]:[[server-port]]"
+  }
+{:main org.parkerici.rawsugar.core
+ :closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}
+ :preloads        [day8.re-frame-10x.preload] ;TODO add devtool?
+ :npm-deps false
+ :output-to "resources/public/cljs-out/dev-main.js"
+ }

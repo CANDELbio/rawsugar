@@ -1,0 +1,45 @@
+# Local variables:
+# eval: (add-hook 'after-save-hook 'org-html-export-to-html t t)
+# end:
+
+#+OPTIONS: toc:nil num:nil html-postamble:nil
+#+TITLE: Rawsugar v3.0 User Guide
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+
+* Introduction
+
+Rawsugar is PICI՚s tool for raw data ingestion, storage, and retrieval. It includes a Datomic backend, and two alternate frontends: a CLI and a [[http://rawsugar.parkerici.org][web interface]]. 
+
+
+* Table of Contents
+- [[./general.org][Generalities]]
+- [[./web-ui.org][Web interface]]
+- [[./cli.org][Command-line interface]]
+
+
+
+** Other documents
+
+See [[https://dataplatform.parkerici.org/rawdata/raw-data-pici-trials/][RawSugar Protocol for PICI Trial Data]] for information on how to use RawSugar for PICI clinical trials.
+
+
+** Changes from v2.0
+
+See [[./release3.org][Rawsugar 3.0 Release Notes]]
+
+** Changes from v1.0
+
+The main change in Rawsugar 2.0 is the introduction of *batches*, a new intermediate level of organization (see the next section for details). 
+
+For CLI use, this means:
+- there are some new batch specific commands like list-batches
+- most commands that took a sheet argument now require a batch argument as well
+
+The web interface has also been overhauled. The major changes;
+- Projects and batches have their own pages
+- File matching no longer is done on a separate page; instead it uses a flyout pane available from sheet view
+- Ops machinery has an improved UI with interdependent selectors
+- Bold new look with PICI branding
+
+
+

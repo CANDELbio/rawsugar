@@ -1,0 +1,6 @@
+{:name "Default recipe"
+ :datatype :datatype.default
+ :doc "https://dataplatform.parkerici.org/rawdata/raw-data-pici-trials/"
+ :steps
+ [#include "recipes/default-head.edn"
+  #include "recipes/default-tail.edn"]}

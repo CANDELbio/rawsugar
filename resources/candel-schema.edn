@@ -1,0 +1,1999 @@
+;;; Copied from alzabo/resources/public/schema/0.3.0/schema.edn
+
+{:title "CANDEL",
+ :version "0.3.0",
+ :kinds
+ {:cell-type
+  {:parent nil,
+   :unique-id :cell-type/co-name,
+   :label :cell-type/co-name,
+   :reference? true,
+   :fields
+   {:co-name
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "Cell Ontology name of the cell type, see http://obofoundry.org/ontology/cl.html"},
+    :description
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Cell Ontology description of the cell type, see http://obofoundry.org/ontology/cl.html"},
+    :xref
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "External ontology references for the cell type, see http://obofoundry.org/ontology/cl.html"},
+    :synonyms
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Other names for the cell type"},
+    :comment
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "Additional information about the cell type"},
+    :parents
+    {:type :cell-type,
+     :cardinality :many,
+     :unique nil,
+     :doc "Cell Ontology IDs for parent cell types"},
+    :co-id
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "Cell Ontology ID of the cell type, see http://obofoundry.org/ontology/cl.html"}}},
+  :therapy
+  {:parent :subject,
+   :unique-id nil,
+   :label nil,
+   :reference? nil,
+   :fields
+   {:line
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The line of therapy for this subject (e.g. first line, second line etc.) as an integer"},
+    :treatment-regimen
+    {:type :treatment-regimen,
+     :cardinality :one,
+     :unique nil,
+     :doc "The treatment regimen that corresponds to this therapy"},
+    :previous
+    {:type :therapy.previous,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "Previous types of therapy for this patient. Refers to entities in the therapy.previous namespace"},
+    :order
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The order of this therapy in this subject's treatment history"}}},
+  :measurement-set
+  {:parent :assay,
+   :unique-id :measurement-set/uid,
+   :label :measurement-set/name,
+   :reference? nil,
+   :fields
+   {:cellengine-experiment-revision-id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The id of the specific revision of the CellEngine experiment that generated this measurement-set"},
+    :description
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "A description for this measurement-set. A measurement set groups together measurements that are related. It can\n                          be used to indicate concepts such as:\n                            1) Measurements that were performed as part of a separate experimental condition\n                            2) Measurements that are derived from a separate computational analysis, e.g. a separate clustering run\n                               os a separate run of a variant calling pipeline"},
+    :atac-peaks
+    {:type :atac-peak,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "The ATAC peaks that are referenced by measurements in this measurement-set"},
+    :measurements
+    {:type :measurement,
+     :cardinality :many,
+     :unique nil,
+     :doc "The measurement values for this measurement set"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for measurement-set"},
+    :name
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The name of the measurement set (e.g. 'baseline'). Must be unique within the scope of the parent assay"},
+    :analysis-repository
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "git remote of the repository containing the analysis code that generated this measurement-set"},
+    :cell-populations
+    {:type :cell-population,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "The cell populations that are referenced by measurements in this measurement-set"},
+    :terra-workspace
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The Terra workspace associated with the pipeline that generated this measurement-set."},
+    :terra-namespace
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The Terra namespace associated with the pipeline that generated this measurement-set."},
+    :terra-submission-id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The id of the Terra submission associated with the pipeline that generated this measurement-set"},
+    :analysis-docker
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "A link to the docker image for the container used to run the analysis"},
+    :terra-workflow
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The Terra worfklow associated with the pipeline that generated this measurement-set."}}},
+  :clinical-trial
+  {:parent :treatment-regimen,
+   :unique-id :clinical-trial/nct-number,
+   :label :clinical-trial/nct-number,
+   :reference? nil,
+   :fields
+   {:other-ids
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Alternative identifiers for this clinical trial"},
+    :nct-number
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "The NCT number of the clinical trial. Must be unique within the database"},
+    :name-long
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The full name of this clinical trial"},
+    :name-short
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "A short name for this clinical trial"}}},
+  :nanostring-signature
+  {:parent nil,
+   :unique-id :nanostring-signature/name,
+   :label :nanostring-signature/name,
+   :reference? true,
+   :fields
+   {:name
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "The name of the nanostring signature"},
+    :genes
+    {:type :gene,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "The list of genes that are used to calculate this nanostring signature"}}},
+  :variant
+  {:parent nil,
+   :unique-id :variant/id,
+   :label :variant/id,
+   :reference? true,
+   :fields
+   {:exac-eas
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "East Asian allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :alt-allele
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The alternate allele for this variant"},
+    :genomic-coordinates
+    {:type :genomic-coordinate,
+     :cardinality :one,
+     :unique nil,
+     :doc "The coordinates of this variant"},
+    :alt-allele-2
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The 2nd alternate allele for this variant"},
+    :exac-nfe
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Non-Finnish European allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :HGVSp
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The HGVSp string for this variant, see http://varnomen.hgvs.org/"},
+    :exac-fin
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Finnish allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :publication
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "DOI of publication associated with this variant, as a string"},
+    :dbSNP
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "A list of dbSNP (https://www.ncbi.nlm.nih.gov/projects/SNP/) ids for this variant"},
+    :ref-allele
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The reference allele for this variant"},
+    :HGVSc
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The HGVSc string for this variant, see http://varnomen.hgvs.org/"},
+    :type
+    {:type :variant.type,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The type of this variant, refers to idents in the 'variant.type' namespace"},
+    :exac-sas
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "South Asian allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :classification
+    {:type :variant.classification,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The classification of this variant, refers to idents in the 'variant.classification' namespace"},
+    :feature-type
+    {:type :ref,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The type of feature (transcript, regulatory, motif), refers to idents in the 'variant.feature.type' namespace"},
+    :cosmic
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Overlapping COSMIC variants"},
+    :so-consequences
+    {:type :so-sequence-feature,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "The functional consequence of the variant, in sequence ontology terms (http://www.sequenceontology.org/).\n                          Refers to so-sequence-feature entities"},
+    :exac-amr
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "American allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "Globally unique id for this variant. This is constructed by joining using '/' the\n                          coordinates, ref-allele and alt-allele"},
+    :neo-antigens
+    {:type :neo-antigen,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of neo-antigens associated with this variant"},
+    :gene
+    {:type :gene,
+     :cardinality :one,
+     :unique nil,
+     :doc "The gene for this variant"},
+    :exac-af-adj
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Adjusted global allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :exac-afr
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "African/African-American allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :context
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The reference allele per VCF specs, and its five flanking base pairs"},
+    :exac-oth
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Other allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :exac-af
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Global allele frequency from ExAC, in range [0, 1]. See http://exac.broadinstitute.org/"},
+    :impact
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The impact modifier for the consequence type"}}},
+  :gene-product
+  {:parent nil,
+   :unique-id :gene-product/id,
+   :label :gene-product/id,
+   :reference? true,
+   :fields
+   {:id
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "The id of the gene product. In most cases this corresponds to the id of the gene"},
+    :gene
+    {:type :gene,
+     :cardinality :one,
+     :unique nil,
+     :doc "The gene that this gene product was derived from"}}},
+  :genomic-coordinate
+  {:parent nil,
+   :unique-id :genomic-coordinate/id,
+   :label :genomic-coordinate/id,
+   :reference? true,
+   :fields
+   {:contig
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The genomic contig (e.g. the chromosome) for this coordinate as a string"},
+    :strand
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The strand for this coordinate, either '+' or '-'"},
+    :start
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc "The start position for this coordinate as an integer"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "The id of this genomic coordinate as a string 'assembly:contig:strand:start:end'. Must be unique within the database"},
+    :assembly
+    {:type :genomic.coordinate.assembly,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The reference genomic assembly for this coordinate, refers to idents in the 'assembly' namespace"},
+    :end
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc "The end position for this coordinate as an integer"}}},
+  :cnv
+  {:parent nil,
+   :unique-id :cnv/id,
+   :label :cnv/id,
+   :reference? true,
+   :fields
+   {:genomic-coordinates
+    {:type :genomic-coordinate,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The coordinates of this Copy Number Variation (CNV) segment"},
+    :genes
+    {:type :gene,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of genes included in this CNV segment"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "ID of the coordinates of the CNV segment. Identical to genomic coordinate ID."}}},
+  :so-sequence-feature
+  {:parent nil,
+   :unique-id :so-sequence-feature/name,
+   :label :so-sequence-feature/name,
+   :reference? true,
+   :fields
+   {:name
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "The name of the sequence feature from Sequence Ontology"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "The Sequence Ontology id of this sequence feature"}}},
+  :ctcae-adverse-event
+  {:parent nil,
+   :unique-id :ctcae-adverse-event/name,
+   :label :ctcae-adverse-event/name,
+   :reference? true,
+   :fields
+   {:name
+    {:type :string,
+     :cardinality :one,
+     :unique :value,
+     :doc
+     "The globally unique, term for this adverse event in the CTCAE classification"},
+    :meddra-code
+    {:type :string,
+     :cardinality :one,
+     :unique :value,
+     :doc
+     "The globally unique code for this adverse event in the MedDRA classification"}}},
+  :comorbidity
+  {:parent nil,
+   :unique-id :comorbidity/name,
+   :label :comorbidity/name,
+   :reference? true,
+   :fields
+   {:name
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "The name of the comorbididty. Must be unique within the database"},
+    :synonyms
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Synonyms for the comorbidity"}}},
+  :study-day
+  {:parent :dataset,
+   :unique-id :study-day/uid,
+   :label :study-day/id,
+   :reference? nil,
+   :fields
+   {:day
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc "The days since the reference event"},
+    :reference-event
+    {:type :study.day.reference.event,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The reference event (e.g. study enrollment) that study days are counted from. Refers\n                          to entities in the study.day.reference.event namespace"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The id of the study day"}}},
+  :tcr
+  {:parent nil,
+   :unique-id :tcr/id,
+   :label :tcr/id,
+   :reference? true,
+   :fields
+   {:beta
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The sequence, in amino acid terms, of the TCR beta chain, if present"},
+    :alpha-1
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The sequence, in amino acid terms, of the first TCR alpha chain, if present"},
+    :alpha-2
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The sequence, in amino acid terms, of the second TCR alpha chain, if present"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "The ID of the TCR, formed as a string by combining the tcr-alpha-1, tcr-alpha-2, and tcr-beta separated by /"}}},
+  :gdc-anatomic-site
+  {:parent nil,
+   :unique-id :gdc-anatomic-site/name,
+   :label :gdc-anatomic-site/name,
+   :reference? true,
+   :fields
+   {:name
+    {:type :string,
+     :cardinality :one,
+     :unique :value,
+     :doc
+     "A globally unique name for an anatomic site, as defined in the\n                          Genomics Data Commons (GDC)"}}},
+  :sample
+  {:parent :dataset,
+   :unique-id :sample/uid,
+   :label :sample/id,
+   :reference? nil,
+   :fields
+   {:WHO-grade
+    {:type :ref,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The WHO grade of a tumor sample. Refers to idents in the 'whoGrade' namespace"},
+    :laterality
+    {:type :sample.laterality,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "For tumors in paired organs, designates the side on which the specimen was obtained. This attribute\n                          was derived from GDC and refers to entities in the 'sample.laterality' namespace"},
+    :freetext-anatomic-site
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The anatomical location from which this sample was collected in free text form"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for samples"},
+    :specimen
+    {:type :sample.specimen,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The specimen type for this sample, refers to idents in the 'sample.specimen' namespace"},
+    :type
+    {:type :sample.type,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The type of this sample (tumor / normal), refers to idents in the 'sample.type' namespace"},
+    :study-day
+    {:type :study-day,
+     :cardinality :one,
+     :unique nil,
+     :doc "The study day when this sample was collected"},
+    :gdc-anatomic-site
+    {:type :gdc-anatomic-site,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The anatomical location from which this sample was collected according to the Genomics Data Commons (GDC) vocabulary"},
+    :tumor-type
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The tumor type. This is presently a string, but needs to be moved to an enum"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The id of the sample. Must be unique within a dataset, but not necessarily within the database"},
+    :container
+    {:type :sample.container,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The container that was initially used to collect this sample (if known), e.g. CPT tube, EDTA tube etc.\n                          Refers to idents in the 'sample.container' namespace"},
+    :recurrence
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc "Whether this is a sample from a recurrence"},
+    :timepoint
+    {:type :timepoint,
+     :cardinality :one,
+     :unique nil,
+     :doc "The timepoint when this sample was collected"},
+    :subject
+    {:type :subject,
+     :cardinality :one,
+     :unique nil,
+     :doc "The subject that this sample was derived from"},
+    :metastasis
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc "Whether this is a sample from a metastasis"}}},
+  :measurement
+  {:parent :measurement-set,
+   :unique-id nil,
+   :label nil,
+   :reference? nil,
+   :fields
+   {:live-percent
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the percentage of live cells in a sample.\n                          Note that in tihs case the measurement will not have a target cell population"},
+    :baf
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the allelic fraction of the B allele in tumor tissue, for a copy number variation segment"},
+    :U-L
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a concentration expressed as units (U) /L"},
+    :loh
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement demonstrates a loss of heterozygosity (LOH) for a copy number variation segment"},
+    :nuclei-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the number of nuclei in a sample (mostly useful for\n                          imaging assays. Note that in this case the measurement will not target any specific cell-population"},
+    :nanostring-signature
+    {:type :nanostring-signature,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target nanostring signature for this measurement"},
+    :leukocyte-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the number of leukocytes in a sample (mostly useful for\n                          flow cytometry assays. Note that in this case the measurement will not target any specific cell-population"},
+    :variant
+    {:type :variant,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target variant for this measurement"},
+    :tcr-j
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the J gene segment linking to a specific T Cell Receptor (TCR)"},
+    :lymphocyte-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the number of lymphocytes in a sample (mostly useful for\n                          flow cytometry assays. Note that in this case the measurement will not target any specific cell-population"},
+    :gene-product
+    {:type :gene-product,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target gene product for this measurement"},
+    :nanostring-count
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a gene expression count from Nanostring"},
+    :singlets-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the number of singlets in a sample (mostly useful for\n                          flow cytometry assays. Note that in this case the measurement will not target any specific cell-population"},
+    :live-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the number of live cells in a sample (mostly useful for\n                          flow cytometry assays. Note that in this case the measurement will not target any specific cell-population"},
+    :percent-of-nuclei
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the abundance of a specific cell-populations, expressed\n                          as the percentage of the total number of nucleated cells (mostly useful for imaging assays)"},
+    :tcr-v
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the V gene segment linking to a specific T Cell Receptor (TCR)"},
+    :fraction-reads-in-peaks
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the fraction of reads that are assigned to a peak in a sample\n                          (relevant for ATACesq data and expressed as a number in [0, 1]). Note that in this case the measurement will not have any target"},
+    :cfdna-ng-mL
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a concentration of cell-free DNA (cfDNA) in blood, expressed as ng/mL"},
+    :baf-n
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the allelic fraction of the B allele in normal tissue, for a copy number variation segment"},
+    :n-depth
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the read depth across this locus in the normal sequencing output"},
+    :percent-of-live
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the abundance of a specific cell-populations, expressed\n                          as the percentage of the total number of live cells in the sample (mostly useful for flow cytometry assays"},
+    :read-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the count of reads for a specific target"},
+    :t-depth
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the read depth across this locus in the tumor sequencing output"},
+    :tcr-frequency
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the frequency of a specific T Cell Receptor (TCR)"},
+    :cnv
+    {:type :cnv,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target cnv for this measurement"},
+    :chromvar-tf-binding-score
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a transcription factor binding score\n                          as calculated by chromVAR"},
+    :total-reads
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the total number of reads in a sample.\n                          Note that in this case the measurement will not have any target"},
+    :segment-mean-lrr
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the mean Log R Ratio (LRR) of a CNV (Copy Number Variation) segment. This is equal\n                          to log2(copy-number / 2) for a genomic segment"},
+    :tmb-indel
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Tumor mutational burden expressed as the total number of indels per Mb sequenced"},
+    :tcr
+    {:type :tcr,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target T Cell Receptor (TCR) for this measurement"},
+    :median-channel-value
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a median channel (protein) value of a cytometry population or cluster"},
+    :percent-of-leukocytes
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the abundance of a specific cell-populations, expressed\n                          as the percentage of the total number of leukocytes in the sample (mostly useful for flow cytometry assays"},
+    :sample
+    {:type :sample,
+     :cardinality :one,
+     :unique nil,
+     :doc "The biological sample this measurement was performed on"},
+    :n-alt-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the read depth supporting the variant allele in the normal sequencing output"},
+    :cell-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the number of cells in a specific cell-population"},
+    :tcr-clonality
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a TCR clonality measurement. Note that in this case\n                          the entity will not have a specific TCR target."},
+    :fpkm
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a FPKM value (Fragments Per Kilobase Million, a measure\n                          of gene expression in RNAseq experiments)"},
+    :fraction-aligned-reads
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the fraction of aligned reads in a sample\n                          (expressed as a number in [0, 1]). Note that in this case the measurement will not have any target"},
+    :tss-score
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the TSS score of the sample (relevant for ATACseq data).\n                          Note that in this case the measurement will not have any target"},
+    :t-ref-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the read depth supporting the reference allele in the tumor sequencing output"},
+    :tumor-purity
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the tumor purity of a sample\n                          (expressed as a number in [0, 1]). Note that in this case the measurement will not have any target"},
+    :epitope
+    {:type :epitope,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target protein epitope for this measurement"},
+    :percent-of-total-cells
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the abundance of a specific cell-populations, expressed\n                          as the percentage of the total number of cells in the sample (in [0, 1], mostly useful for flow cytometry assays)"},
+    :n-ref-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the read depth supporting the reference allele in the normal sequencing output"},
+    :percent-of-parent
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the abundance of a specific cell-populations, expressed\n                          as the percentage of its parent population"},
+    :tcr-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the counts of a specific T Cell Receptor (TCR)"},
+    :average-depth
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the average sequencing depth of a sample.\n                          Note that in this case the measurement will not have any target"},
+    :percent-of-singlets
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the abundance of a specific cell-populations, expressed\n                          as the percentage of the total number of singlets in the sample (mostly useful for flow cytometry assays"},
+    :b-allele-cn
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the copy number of the B allele"},
+    :absolute-cn
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the absolute copy number of a segment"},
+    :contamination
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the fraction of reads that do not come from this sample\n                          (expressed as a number in [0, 1]). Note that in this case the measurement will not have any target"},
+    :a-allele-cn
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the copy number of the A allele"},
+    :percent-of-lymphocytes
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the abundance of a specific cell-populations, expressed\n                          as the percentage of the total number of lymphocytes in the sample (mostly useful for flow cytometry assays"},
+    :cell-population
+    {:type :cell-population,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target cell population for this measurement"},
+    :tmb-total
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Tumor mutational burden expressed as the total number of mutations (SNVs + indels) per Mb sequenced"},
+    :rpkm
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a RPKM value (Reads Per Kilobase Million, a measure\n                          of gene expression in RNAseq experiments)"},
+    :tpm
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a TPM value (Transcripts Per Kilobase Million, a measure\n                          of gene expression in RNAseq experiments)"},
+    :vaf
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the variant allele frequency of a variant"},
+    :tcr-d
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the D gene segment linking to a specific T Cell Receptor (TCR)"},
+    :region-of-interest
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "For imaging data, the region of interest that this measurement refers to"},
+    :tmb-snv
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Tumor mutational burden expressed as the total number of SNVs per Mb sequenced"},
+    :atac-peak
+    {:type :atac-peak,
+     :cardinality :one,
+     :unique nil,
+     :doc "The target ATAC peak for this measurement"},
+    :nanostring-signature-score
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the score for a nanostring signature"},
+    :t-alt-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents the read depth supporting the variant allele in the tumor sequencing output"},
+    :ng-mL
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Use this attribute if the measurement represents a concentration expressed as ng/mL"}}},
+  :treatment-regimen
+  {:parent :dataset,
+   :unique-id :treatment-regimen/uid,
+   :label :treatment-regimen/name,
+   :reference? nil,
+   :fields
+   {:clinical-trial
+    {:type :clinical-trial,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The clinical trial that this treatment regimen is part of (if any)"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for treatment-regimens"},
+    :name
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The name of the treatment regimen. Must be unique within this dataset but not\n                          necessarily within the database"},
+    :setting
+    {:type :treatment.regimen.setting,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The setting (e.g. adjuvant) of this treatment regimen. Refers to idents in the 'treatment.setting namespace'"},
+    :trial-arm
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The arm of the clinical trial that this treatment regimen is part of (if any)"},
+    :drug-regimens
+    {:type :drug-regimen,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "The drug regimens that constitute this treatment regimen"}}},
+  :epitope
+  {:parent nil,
+   :unique-id :epitope/id,
+   :label :epitope/id,
+   :reference? true,
+   :fields
+   {:id
+    {:type :string,
+     :cardinality :one,
+     :unique :value,
+     :doc
+     "The id of the epitope. This is unique within the database.\n                           The id is a string constructed by joining using '/' the following fields:\n                           1) the protein uniprot ID\n                           2) the modifications, in alphabetical order"},
+    :protein
+    {:type :protein,
+     :cardinality :one,
+     :unique nil,
+     :doc "The protein that this is an epitope of"}}},
+  :gene
+  {:parent nil,
+   :unique-id :gene/hgnc-symbol,
+   :label :gene/hgnc-symbol,
+   :reference? true,
+   :fields
+   {:genomic-coordinates
+    {:type :genomic-coordinate,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "The genomic coordinate for this gene. Can be multiple because of different genome assemblies"},
+    :alias-hgnc-symbols
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Alternative symbols for this gene"},
+    :ucsc-id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The UCSC id for this gene"},
+    :hgnc-locus-group
+    {:type :gene.hgnc.locus.group,
+     :cardinality :one,
+     :unique nil,
+     :doc "The HGNC locus group"},
+    :alias-hgnc-names
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Alternative names for this gene"},
+    :previous-hgnc-symbols
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Previous symbols for this gene"},
+    :refseq-accession
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The RefSeq accession for this gene"},
+    :hgnc-symbol
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "The HGNC symbol for this gene, must be unique within the database"},
+    :previous-hgnc-names
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Previous names for this gene"},
+    :hgnc-id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The HGNC id for this gene. These ids are stable even if the symbol changes"},
+    :date-hgnc-symbol-changed
+    {:type :instant,
+     :cardinality :one,
+     :unique nil,
+     :doc "The date the HGNC symbol changed last"},
+    :hgnc-name
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The HGNC name"},
+    :hgnc-prev-symbols
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "Previous HGNC symbols for this gene"},
+    :ensembl-id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The ENSEMBL id for this gene"},
+    :date-hgnc-name-changed
+    {:type :instant,
+     :cardinality :one,
+     :unique nil,
+     :doc "The date the HGNC name changed last"}}},
+  :protein
+  {:parent nil,
+   :unique-id :protein/uniprot-name,
+   :label :protein/uniprot-name,
+   :reference? true,
+   :fields
+   {:preferred-name
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The UniProt preferred name of the protein"},
+    :uniprot-name
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc
+     "The UniProt name for the protein, unique within the database. This is the UniProt\n                          name minus the '_HUMAN' part (e.g. 'PDCD1_HUMAN' becomes 'PDCD1')"},
+    :synonyms
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "A list of synonyms for this protein"},
+    :uniprot-accessions
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc "A list of UniProt accession IDs for this protein"},
+    :gene
+    {:type :gene,
+     :cardinality :one,
+     :unique nil,
+     :doc "The gene that encodes for this protein"},
+    :cd-antigen
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The CD Nomenclature for this protein (when applicable)"},
+    :modifications
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "Post-translational modification to the protein, as a string"}}},
+  :timepoint
+  {:parent :dataset,
+   :unique-id :timepoint/uid,
+   :label :timepoint/id,
+   :reference? nil,
+   :fields
+   {:day
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "If applicable, the day in the cycle of therapy that this timepoint represents"},
+    :relative-order
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The relative order of this timepoint within its treatment regimen. This field is mandatory for\n                          timepoints that have a :timepoint/treatment-regimen attribute"},
+    :cycle
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "If applicable, the cycle of therapy that this timepoint represents"},
+    :offset
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The offset in number of days (positive or negative) between this specific timepoint and the nominal timepoint\n                          indicate by its :timepoint/attribute. For instance to indicate two timepoints that are 5 days before and after\n                          the first treatment, you would create two timepoint entities both with type :timepoint/treatment1 and with offsets\n                          -5 and +5 respectively"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for timepoints"},
+    :type
+    {:type :timepoint.type,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The type of this timepoint, refers to idents in the 'timepoint' namespace. The type of the timepoint is meant to\n                          represent both logical timepoints that exist outside of any chronological timeline (e.g. 'baseline'), as well\n                          as nominal timepoints within a treatment regimen (e.g. 'treatment1'). This field is mandatory"},
+    :treatment-regimen
+    {:type :treatment-regimen,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The treatment regimen that this timepoint is part of. Note that timepoints that have a :timepoint/relative-order\n                          attribute MUST refer to a treatment regimens. Timepoints that do not have such attribute may exist outside\n                          of any treatment-regimen"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The id of the timepoint. This is unique within the dataset, but not necessarily within the database. If this timepoint\n                          is associated with a treatment regimen, the id must to start with the treatment regimen followed by the\n                          character '/'. The rest of the id is free format"}}},
+  :drug-regimen
+  {:parent :treatment-regimen,
+   :unique-id nil,
+   :label nil,
+   :reference? nil,
+   :fields
+   {:freetext-drug
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The drug used in this regimen in free text form"},
+    :drug
+    {:type :drug,
+     :cardinality :one,
+     :unique nil,
+     :doc "The drug used in this regimen"},
+    :cycle-length
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc "Length of the drug cycle (in days)"}}},
+  :cell-population
+  {:parent :measurement-set,
+   :unique-id :cell-population/uid,
+   :label :cell-population/name,
+   :reference? nil,
+   :fields
+   {:cell-type
+    {:type :cell-type,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The cell-type represented by this cell-population. This is mandatory for populations\n                          that have not been defined by clustering"},
+    :parent
+    {:type :cell-population,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The cell-population that is a parent of this cell-population. This is meant to\n                          represent gating hierarchies"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for cell-populations"},
+    :name
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The name of this cell population, must be unique within the scope of this measurement-set"},
+    :negative-markers
+    {:type :epitope,
+     :cardinality :many,
+     :unique nil,
+     :doc "The opposite of :cell-population/positive-markers"},
+    :positive-markers
+    {:type :epitope,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "Reference to markers (i.e. epitopes) whose presence contributes to defining\n                          this cell population. This does not have to be an exhaustive list as it is meant\n                          to represent concepts such as Ki67+ CD4 T cells"},
+    :from-clustering
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Flag indicating whether this cell population was derived from automatic clustering\n                          (i.e. as opposed to manual gating)"}}},
+  :drug
+  {:parent nil,
+   :unique-id :drug/preferred-name,
+   :label :drug/preferred-name,
+   :reference? true,
+   :fields
+   {:preferred-name
+    {:type :string,
+     :cardinality :one,
+     :unique :value,
+     :doc
+     "The globally unique, preferred name of the drug. In the WHODrug dictionary\n                          this corresponds to the drug that, for a given Drug Record Number, has the Drug Code with\n                          Seq1 = '01' and Seq2 = '001' (refer to the WHODrug user manual"},
+    :record-number
+    {:type :string,
+     :cardinality :one,
+     :unique :value,
+     :doc
+     "The globally unique, WHO Drug Record Number for this drug. The Drug Record Number corresponds\n                          to the first six characters of the Drug Code (refer to the WHODrug user manual"},
+    :variations
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "A list of variations associated with this drug. Variations include different salts,\n                          preparations or commercial names of the same active moiety. These variations all have\n                          the same Record Number but different Seq1 and Seq2 values"},
+    :sdg-group
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The group from the Standardised Drug Groupings dataset that this drug belongs to"}}},
+  :meddra-disease
+  {:parent nil,
+   :unique-id :meddra-disease/preferred-name,
+   :label :meddra-disease/preferred-name,
+   :reference? true,
+   :fields
+   {:preferred-name
+    {:type :string,
+     :cardinality :one,
+     :unique :value,
+     :doc "The globally unique, MedDRA preferred name of the disease"},
+    :synonyms
+    {:type :string,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "A list of synonyms for the disease. These are MedDRA lowest level terms associated\n                          with this preferred term"}}},
+  :chr-acc-reg
+  {:parent nil,
+   :unique-id :chr-acc-reg/genomic-coordinates,
+   :label :chr-acc-reg/genomic-coordinates,
+   :reference? true,
+   :fields
+   {:genomic-coordinates
+    {:type :genomic-coordinate,
+     :cardinality :one,
+     :unique nil,
+     :doc "The coordinates of this chromatin accessible region"}}},
+  :clinical-observation
+  {:parent :dataset,
+   :unique-id nil,
+   :label nil,
+   :reference? nil,
+   :fields
+   {:tumor-sum-diam-perc-change
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The percent change in the tumor sum of diameters. Must be a number in [-1 1]"},
+    :ldh
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Lactate Dehydrogenase (LDH) measurement in blood, expressed in U/L"},
+    :disease-stage
+    {:type :clinical.observation.disease.stage,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The stage of the disease. Refers to entities in the 'disease.stage' namespace. This is a clinical-observation\n                          in order to allow the possibility for re-staging (even though technically tumor stage is not a time-varying\n                          concept)"},
+    :absolute-monocyte-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The absolute monocyte count expressed in number of cells per microliter "},
+    :ctcae-adverse-event
+    {:type :ctcae-adverse-event,
+     :cardinality :one,
+     :unique nil,
+     :doc "Adverse event according to the CTCAE classification"},
+    :study-day
+    {:type :study-day,
+     :cardinality :one,
+     :unique nil,
+     :doc "The study-day at which this observation was performed"},
+    :recist
+    {:type :clinical.observation.recist,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The RECIST (Response Evaluation Critera in Solid Tumors) score for this observation,\n                          refers to idents in the 'recist' namespace"},
+    :tumor-sum-diam
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc "The sum of the tumor diameters in mm"},
+    :absolute-leukocyte-count
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The absolute leukocyte count expressed in number of cells per microliter "},
+    :bmi
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The body mass index of the subject. Unless more information is available,\n                          such observations should be connected to the baseline timepoint"},
+    :recurrence
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc "Indicates that the disease has recurred"},
+    :responder
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Whether the subject responded to therapy.  Unless more information is\n                          available, such observations should be connected to the End of Study (EOS) timepoint"},
+    :os
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The overall survival of the subject in months.  Unless more information is\n                          available, such observations should be connected to the End of Study (EOS) timepoint"},
+    :timepoint
+    {:type :timepoint,
+     :cardinality :one,
+     :unique nil,
+     :doc "The timepoint at which this observation was performed"},
+    :metastatic
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc "Indicates that the disease has become metastatic"},
+    :subject
+    {:type :subject,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The subject that this clinical observation was performed in"},
+    :ae-grade
+    {:type :clinical.observation.ae.grade,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Grade of the adverse event. Refer to idents in the ae.grade namespace"},
+    :freetext-adverse-event
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "Adverse event in free text form"},
+    :pfs
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The progression free survival of the subject in months. Unless more information is\n                          available, such observations should be connected to the End of Study (EOS) timepoint"}}},
+  :subject
+  {:parent :dataset,
+   :unique-id :subject/uid,
+   :label :subject/id,
+   :reference? nil,
+   :fields
+   {:therapies
+    {:type :therapy,
+     :cardinality :many,
+     :unique nil,
+     :doc
+     "The list of therapies for this subject. Note that every subject must have a value for this attribute\n                          even when all the subjects in the dataset received the same therapy (or therapies)"},
+    :age
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc "The age of the subject in years"},
+    :sex
+    {:type :subject.sex,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The sex of the subject. Refers to idents in the 'sex' namespace"},
+    :dead
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc "Whether the subject is dead or not"},
+    :smoker
+    {:type :subject.smoker,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The smoking status of the subject. Refers to idents in the 'smoker' namespace"},
+    :race
+    {:type :subject.race,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The race of the subject, refers to idents in the 'race' namespace"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for subjects"},
+    :ethnicity
+    {:type :subject.ethnicity,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The ethnicity of the subject, refers to idents in the 'ethnicity' namespace"},
+    :HLAI-type
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The HLAI type of the subject, as a string"},
+    :freetext-disease
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The disease (i.e. cancer type) of this subject in free text form"},
+    :id
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The id of the subject. Must be unique within this dataset (but not within the entire database)"},
+    :metastatic-disease
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc "Whether the disease is metastatic"},
+    :comorbidities
+    {:type :comorbidity,
+     :cardinality :many,
+     :unique nil,
+     :doc "The comorbidities of the subject"},
+    :HLAII-type
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The HLAII type of the subject, as a string"},
+    :meddra-disease
+    {:type :meddra-disease,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The disease (i.e. cancer type) of this subject according to the MedDRA classification"}}},
+  :atac-peak
+  {:parent :measurement-set,
+   :unique-id :atac-peak/uid,
+   :label :atac-peak/name,
+   :reference? nil,
+   :fields
+   {:genomic-coordinates
+    {:type :genomic-coordinate,
+     :cardinality :one,
+     :unique nil,
+     :doc "The genomic coordinates of the ATAC peak"},
+    :-log10qvalue
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Similar to -log10pvalue, but after Benjamini-Hochberg correction"},
+    :jointly-called
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Whether this peak was derived by jointly calling on multiple samples"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for atac-peaks"},
+    :name
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The name of the ATAC peak. Must be unique within the scope of the measurement-set"},
+    :summit-offset
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The offset of the peak summit from the beginning of the region"},
+    :quality-score
+    {:type :long,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The quality score for the peak. This is calculated as int(-10*log10qvalue)"},
+    :fixed-width
+    {:type :boolean,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "Whether this peak was called in fixed width mode, i.e. all of the peaks are the same width,\n                          and have the summit of the peak as their center"},
+    :-log10pvalue
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc "-log10 of the p-value for local Poisson test at peak"}}},
+  :assay
+  {:parent :dataset,
+   :unique-id :assay/uid,
+   :label :assay/name,
+   :reference? nil,
+   :fields
+   {:description
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "A free text description for this assay"},
+    :uid
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Synthetic unique ID for assays"},
+    :name
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The name of the assay, must be unique within the dataset, but not within the entire database"},
+    :technology
+    {:type :assay.technology,
+     :cardinality :one,
+     :unique nil,
+     :doc
+     "The technology used for this assay. Refers to idents in the 'technology' namespace"},
+    :measurement-sets
+    {:type :measurement-set,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of measurement sets for this assay"}}},
+  :dataset
+  {:parent nil,
+   :unique-id :dataset/name,
+   :label :dataset/name,
+   :reference? nil,
+   :fields
+   {:description
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "A short, free text description of the dataset"},
+    :samples
+    {:type :sample,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of samples for this dataset"},
+    :timepoints
+    {:type :timepoint,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of timepoints for this dataset"},
+    :name
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "The name of the dataset, must be unique"},
+    :assays
+    {:type :assay,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of assays for this dataset"},
+    :doi
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "The digital object identifier (DOI) of the dataset"},
+    :treatment-regimens
+    {:type :treatment-regimen,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of treatment regimens for this dataset"},
+    :url
+    {:type :string,
+     :cardinality :one,
+     :unique :identity,
+     :doc "Dataset URL"},
+    :subjects
+    {:type :subject,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of subjects for this dataset"},
+    :clinical-observations
+    {:type :clinical-observation,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of clinical observations for this dataset"},
+    :study-days
+    {:type :study-day,
+     :cardinality :many,
+     :unique nil,
+     :doc "The list of study days for this dataset"}}},
+  :neo-antigen
+  {:parent nil,
+   :unique-id :neo-antigen/id,
+   :label :neo-antigen/id,
+   :reference? true,
+   :fields
+   {:wt-peptide
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The wildtype peptide for this neo-antigen"},
+    :mut-peptide
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The mutated peptide for this neo-antigen"},
+    :mut-score
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc "The score associated with the mutated peptide"},
+    :wt-score
+    {:type :float,
+     :cardinality :one,
+     :unique nil,
+     :doc "The score associated with the wildtype peptide"},
+    :HLA-allele
+    {:type :string,
+     :cardinality :one,
+     :unique nil,
+     :doc "The HLAAllele for this neo-antigen"}}}},
+ :enums
+ {:candel {:values #:candel{:schema "schema"}},
+  :gene.hgnc.locus.group
+  {:values
+   #:gene.hgnc.locus.group{:protein-coding-gene "protein-coding-gene",
+                           :non-coding-rna "non-coding-rna",
+                           :pseudogene "pseudogene",
+                           :withdrawn "withdrawn",
+                           :other "other",
+                           :phenotype "phenotype"}},
+  :clinical.observation.disease.stage
+  {:values
+   #:clinical.observation.disease.stage{:zero "zero",
+                                        :zeroA "zeroA",
+                                        :iiiC2 "iiiC2",
+                                        :iiiC1 "iiiC1",
+                                        :ivB "ivB",
+                                        :iB "iB",
+                                        :ii "ii",
+                                        :iiB "iiB",
+                                        :ivA "ivA",
+                                        :iii "iii",
+                                        :iiC "iiC",
+                                        :iv "iv",
+                                        :iiA "iiA",
+                                        :iiiC "iiiC",
+                                        :iiA1 "iiA1",
+                                        :ivC "ivC",
+                                        :iiiD "iiiD",
+                                        :iC "iC",
+                                        :iA "iA",
+                                        :iiA2 "iiA2",
+                                        :iiiB "iiiB",
+                                        :iiiA "iiiA",
+                                        :i "i",
+                                        :iA2 "iA2",
+                                        :iB1 "iB1",
+                                        :iA1 "iA1",
+                                        :zeroIS "zeroIS",
+                                        :iB2 "iB2"}},
+  :variant.feature
+  {:values
+   #:variant.feature{:transcript "transcript",
+                     :regulatory "regulatory",
+                     :motif "motif"}},
+  :assay.technology
+  {:values
+   #:assay.technology{:ATAC-seq "ATAC-seq",
+                      :WGS "WGS",
+                      :DNA-seq "DNA-seq",
+                      :MIBI "MIBI",
+                      :flow-cytometry "flow-cytometry",
+                      :TCR-seq "TCR-seq",
+                      :IMC "IMC",
+                      :IHC "IHC",
+                      :CODEX "CODEX",
+                      :RNA-seq "RNA-seq",
+                      :expression-array "expression-array",
+                      :qPCR "qPCR",
+                      :WES "WES",
+                      :dPCR "dPCR",
+                      :foundation-targeted-panel
+                      "foundation-targeted-panel",
+                      :mass-cytometry "mass-cytometry",
+                      :ELISA "ELISA",
+                      :SNP-array "SNP-array",
+                      :vectra "vectra",
+                      :luminex "luminex",
+                      :impact-targeted-panel "impact-targeted-panel",
+                      :nanostring "nanostring",
+                      :PCR "PCR"}},
+  :analysis.type
+  {:values
+   #:analysis.type{:diff-expression "diff-expression",
+                   :diff-methylation "diff-methylation",
+                   :pathway-enrichment "pathway-enrichment",
+                   :geneset-enrichment "geneset-enrichment",
+                   :clustering "clustering"}},
+  :study.day.reference.event
+  {:values
+   #:study.day.reference.event{:enrollment "enrollment",
+                               :diagnosis "diagnosis",
+                               :surgery "surgery"}},
+  :clinical.observation.recist
+  {:values
+   #:clinical.observation.recist{:PR "PR",
+                                 :PD "PD",
+                                 :SD "SD",
+                                 :CR "CR"}},
+  :timepoint.type
+  {:values
+   #:timepoint.type{:baseline "baseline",
+                    :tumor-assessment "tumor-assessment",
+                    :surgery "surgery",
+                    :follow-up "follow-up",
+                    :eos "eos",
+                    :on-treatment "on-treatment",
+                    :diagnosis "diagnosis"}},
+  :sample.container
+  {:values
+   #:sample.container{:streck-dna-tube "streck-dna-tube",
+                      :sodium-citrate-tube "sodium-citrate-tube",
+                      :paxgene-blood-rna-tube "paxgene-blood-rna-tube",
+                      :cpt-tube "cpt-tube",
+                      :sodium-hep-tube "sodium-hep-tube",
+                      :red-top-serum-tube "red-top-serum-tube",
+                      :paxgene-blood-dna-tube "paxgene-blood-dna-tube",
+                      :sodium-edta-tube "sodium-edta-tube",
+                      :gold-top-serum-tube "gold-top-serum-tube",
+                      :potassium-edta-tube "potassium-edta-tube"}},
+  :subject.smoker
+  {:values
+   #:subject.smoker{:former "former",
+                    :current "current",
+                    :never "never"}},
+  :subject.race
+  {:values
+   #:subject.race{:white "white",
+                  :am-indian-ak-native "am-indian-ak-native",
+                  :african-american "african-american",
+                  :asian "asian",
+                  :hi-pacific "hi-pacific",
+                  :other "other"}},
+  :sample.laterality
+  {:values
+   #:sample.laterality{:bilateral "bilateral",
+                       :left "left",
+                       :right "right",
+                       :unknown "unknown",
+                       :not-reported "not-reported"}},
+  :treatment.regimen.setting
+  {:values
+   #:treatment.regimen.setting{:neoadjuvant "neoadjuvant",
+                               :adjuvant "adjuvant",
+                               :palliative "palliative"}},
+  :subject.sex
+  {:values
+   #:subject.sex{:female "female", :male "male", :unknown "unknown"}},
+  :subject.ethnicity
+  {:values
+   #:subject.ethnicity{:hispanic "hispanic",
+                       :not-hispanic "not-hispanic"}},
+  :genomic.coordinate.assembly
+  {:values
+   #:genomic.coordinate.assembly{:GRCh37 "GRCh37",
+                                 :GRCh38 "GRCh38",
+                                 :NCBI36 "NCBI36",
+                                 :NCBI35 "NCBI35",
+                                 :NCBI34 "NCBI34"}},
+  :sample.specimen
+  {:values
+   #:sample.specimen{:plasma "plasma",
+                     :pbmc "pbmc",
+                     :serum "serum",
+                     :ffpe "ffpe",
+                     :stool "stool",
+                     :xenograft "xenograft",
+                     :whole-blood "whole-blood",
+                     :fresh-frozen "fresh-frozen",
+                     :cell-line "cell-line"}},
+  :variant.classification
+  {:values
+   #:variant.classification{:intron "intron",
+                            :RNA "RNA",
+                            :in-frame-del "in-frame-del",
+                            :silent "silent",
+                            :in-frame-ins "in-frame-ins",
+                            :targeted-region "targeted-region",
+                            :transl-start-site "transl-start-site",
+                            :flank5 "flank5",
+                            :splice-region "splice-region",
+                            :UTR3 "UTR3",
+                            :frame-shift-ins "frame-shift-ins",
+                            :UTR5 "UTR5",
+                            :splice-site "splice-site",
+                            :IGR "IGR",
+                            :nonstop "nonstop",
+                            :missense "missense",
+                            :nonsense "nonsense",
+                            :frame-shift-del "frame-shift-del",
+                            :flank3 "flank3"}},
+  :sample.type
+  {:values
+   #:sample.type{:tumor "tumor",
+                 :normal "normal",
+                 :abnormal "abnormal",
+                 :peritumoral "peritumoral",
+                 :unknown "unknown",
+                 :not-reported "not-reported"}},
+  :therapy.previous
+  {:values
+   #:therapy.previous{:naive "naive",
+                      :chemotherapy "chemotherapy",
+                      :pd1-pdl1 "pd1-pdl1",
+                      :ctla4 "ctla4",
+                      :targeted-therapy "targeted-therapy",
+                      :car-t "car-t",
+                      :treated "treated"}},
+  :clinical.observation.ae.grade
+  {:values
+   #:clinical.observation.ae.grade{:i "i",
+                                   :ii "ii",
+                                   :iii "iii",
+                                   :iv "iv",
+                                   :v "v"}},
+  :variant.type
+  {:values
+   #:variant.type{:ins "ins",
+                  :del "del",
+                  :snp "snp",
+                  :dnp "dnp",
+                  :tnp "tnp",
+                  :onp "onp",
+                  :consolidated "consolidated",
+                  :indel "indel"}},
+  :molecule {:values #:molecule{:gene "gene", :protein "protein"}}}}

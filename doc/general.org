@@ -1,0 +1,29 @@
+#+OPTIONS: html-postamble:nil
+#+TITLE: Rawsugar 3.0 User Guide: Generalities
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+
+
+* Support
+
+Users should feel free to reach out to engineering for support. Questions, suggestions, and bug reports are always welcome. 
+
+Probably the best channel is the #rawsugar Slack channel, but you can also [[https://github.com/ParkerICI/rawsugar/issues/new][file an issue on Github]].
+
+
+* Data Schema
+
+[[file:images/schema.dot.png]]
+
+** The basics (v 2.0)
+
+At the top level, the warehouse contains a number of *projects*, each of which contains a number of *batches*. Each batch can contain *sheets* (spreadsheet pages) and *files*, which include both large data files and the source files for sheets (=.tsv= or Excel files).
+
+A sheet is a grid of *rows*, *columns*, and *cells*. Cells contain a string, integer, or float *value*. 
+
+A row can be linked to a file or multiple files. These appear in a special column called =files=.  Rawsugar contains both manual and automated methods for associating files with the proper sheet rows.
+
+** Recipes and run steps (v 3.0)
+
+Rawsugar 3.0 introduces the concept of recipes and *run-steps*. Recipes are defined in code; when they are instantiated for a paricular batch, they generate run steps, each of which is rendered as a box on the batch page.
+
+

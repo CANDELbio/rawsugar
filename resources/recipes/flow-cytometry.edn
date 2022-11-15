@@ -1,0 +1,21 @@
+
+{:name "Flourescent or CyTOF Flow Cytometry"
+ :datatype :datatype.flow-cytometry
+ :steps
+ [
+
+  ;; #include here means "include the steps of the referenced recipe".
+  ;; Would be nice to do this directly in Aero, but it can't quite do that, so
+  ;; cleaned up by caller.
+  #include "recipes/default-head.edn"
+  
+  {:id :send-to-cellengine
+   :op :sheet->cellengine
+   :doc "https://dataplatform.parkerici.org/datatypes/cytometry/#upload-fcs-files-to-cellengine"}
+  
+  {:id :gate-in-cellengine
+   :link ["CellEngine" "https://cellengine.com/"]
+   :doc "https://dataplatform.parkerici.org/datatypes/cytometry/#gate-samples"}
+  
+  #include "recipes/default-tail.edn"
+  ]}

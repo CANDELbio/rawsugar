@@ -1,0 +1,158 @@
+#+OPTIONS: html-postamble:nil
+#+TITLE: Rawsugar 3.0 User Guide: Web interface
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+
+
+* The web interface
+
+The web interface to RawSugar is at http://rawsugar.parkerici.org. There is a development version at http://dev-rawsugar.parkerici.org; this is a good place to explore or experiment. Both sites require authentication through your PICI Google account.
+
+You can also run the web server locally via the CLI =insecure-server= command. There is probably no reason for non-developers to do this.
+
+The web app should be largely self-explanatory. Some of the less obvious parts are discussed below.
+
+** Login
+
+The first page you see will be the login page. This page will let you authenticate using your PICI Google acocunt. 
+
+
+#+attr_html: :width 1000px#+attr_html: :width 1000px
+[[file:images/Screen_Shot_2020-08-31_at_6.23.21_PM.png]]
+
+
+** Home screen
+
+One logged in, you will see the home screen. This lists all available projects, any of whichi can be expanded to reveal more details.
+   
+#+attr_html: :width 1000px
+[[file:images/Screen_Shot_2020-08-25_at_3.56.43_PM.png]]
+
+
+** Basic navigation
+
+Each project, batch, and sheet has its own page. Projects and batches have some editable properties (including their name). Sheet pages show the sheet data, and also allows you to edit the matching between rows and files.
+
+The header bar shows the pathname (project / batch / sheet) of the current object, and lets you navigate to its parents.
+
+
+** File matching 
+
+
+/File matching/ is the process of associating data files (eg images or sequence files) with the approrpiate rows of a sheet. In Rawsugar 2.0, matching is done batchwise; that is, a match operation is between a sheet and files in the same batch.
+
+*** Viewing matches
+
+The convention in Rawsugar is to draw unmatched rows and files with an orange background, and matched rows and files with a white background. For instance this sheet view shows three matched rows in the midst of some unmatched rows.
+
+#+attr_html: :width 1000px
+[[file:images/Screen_Shot_2020-08-31_at_6.22.07_PM.png]]
+
+Matched rows have a few extra features. The *Files* column shows the name of the matched file and a link to download that file. It's possible for more than one file to be matched to any row; if this is the case the number of matched files is shown as a numeral to the left of the filename (which is picked arbitarily from the set of matching files).
+
+
+ To see the complete set of files, there is an /expander/ on the left of the row, that reveals the full file list for that row:
+
+
+#+attr_html: :width 1000px
+[[file:images/Screen_Shot_2020-08-31_at_6.21.38_PM.png]]
+
+
+*** Changing matches
+
+There are basically two ways to match files: an automated matcher accessed through the Ops menu (see below) or by hand, using the file matching tool in the sheet view. In addition, the Ops menu provides some commands to bulk unlink files using the checkboxes.
+
+The match algorithm works like this: for any unmatched file, find the row in the sheet with the longest common substring to the file name (for some specified set of columns). If this substring is over a given threshold, declare a match.
+
+** Automated matching
+
+Automated matching happens on upload or by means of the File Matching op. The latter gives a greater degree of control via this dialog:
+
+[[file:images/Screen_Shot_2020-10-21_at_5.18.41_PM.png]]
+
+
+The match will take place between the rows of the specified sheet and any unmatched files in the batch. 
+
+Several parameters can be used to control the match:
+
+- *columns* lets you specify a subset of sheet columns to match on (the default is to use all columns)
+- *filename-only?* if checked means only match on the base filename rather than the full path with directories
+- *exact-match?* if checked, the sheet value must be an exact substring of the filename.
+- *match-threshold* specifies the match threshold. Higher means that it is harder to match. Unfortunately there is no exact units for this number; but it is proportional to the required length of a match.
+
+
+** Sheet view and file matching
+
+Clicking the *File Matching* button on the upper right of the sheet view will reveial a second table of files, marked by their matched/unmatched status:
+
+#+attr_html: :width 1000px
+[[file:images/Screen_Shot_2020-08-31_at_6.34.19_PM.png]]
+
+To match a file to a row, select one of each using the checkboxes on the left and right panes, and click the link icon in the middle. 
+
+** History
+
+Rawsugar keeps a history of all past operations. You can view this history on the history tab (main menu), for either a particular project or the system as a whole.
+
+You can also /go back in time/ by clicking the *As of* links in the history view. This will show you the state of the repository as of that particular operation. Note that in this mode you can't make changes. 
+
+It would be nice if you could restore objects from the historical views, but that is currently not implemented. If you have a strong need to revert some project or sheet to its past state, contact the developers.
+
+** Ops
+
+The =Ops= menu contains a variety of commands, most of which mutate the database in some way. An Op pops up a modal dialog with a form to select the ops' arguments.
+
+[[file:images/Screen_Shot_2020-08-25_at_3.17.56_PM.png]]
+
+Most of the Ops should be fairly self-explanatory. Some of the ones that are less so are discussed below. 
+
+
+*** Upload
+
+There are separate ops for uploading files and sheets. Within them, there are 2 or 3 different methods for specifying files to upload: *gs-path*, *local-files*, and *local-directory* (not available for sheets). You need to specify exactly one of these.
+
+ When uploading from  =gs:=, you can specifiy a partial pathname (a directory) and the entire directory will be uploaded to Rawsugar.
+
+
+file:images/Screen_Shot_2021-11-19_at_4.48.04_PM.png
+
+
+*** Merge batches
+*** New sheet for files of type
+*** Separate files into individual rows
+*** Merge rows to new sheet
+*** Join sheets
+*** Union sheets
+*** Replace values
+*** Concatenate two columns' values
+
+
+*** TODO Terra
+
+*** TODO CellEngine
+
+***  Graphing operators
+
+Some ops generate simple visualizations based on sheet data. The Line Graph and Dot Graph ops generate simple line or dot graphs, allowing the user to map selected columns to relevant graphical properties. 
+
+For example, the following op:
+
+
+[[file:images/Screen_Shot_2020-10-22_at_10.11.50_PM.png]]
+
+
+Generates a graph like this:
+
+[[file:images/Screen_Shot_2020-10-22_at_10.45.51_PM.png]]
+
+
+The Dashboard Graph operator is slightly different in two ways: it is a bit more opinionated about what the semantics of the graph are, and the resulting graph is persisted and displayed on the appropriate project and batch pages. For instance this spec:
+
+
+[[file:images/Screen_Shot_2020-10-22_at_10.57.57_PM.png]]
+
+Produces this graph on the batch page. 
+
+[[file:images/Screen_Shot_2020-10-22_at_10.55.11_PM.png]]
+
+Note that aside from the specified properties, the dashboard graph also indicates which datapoints (rows) have associated files, using shape.
+ie

@@ -1,0 +1,5 @@
+{:name "Personalis"
+ :datatype :datatype.personalis
+ :steps
+ [#include "recipes/default-head.edn"
+  #include "recipes/default-tail.edn"]}

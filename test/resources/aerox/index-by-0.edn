@@ -1,0 +1,4 @@
+#index-by
+[:id
+ {:id :foo :value 1}
+ {:id :bar :value 2 }]

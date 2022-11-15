@@ -1,0 +1,9 @@
+{:proto
+ {:a 1
+  :b 2
+  :c {:d {:e 23}}}
+ :derived
+ #merge* [#ref [:proto]
+          {:b 23
+           :c {:x 99} }]
+ }

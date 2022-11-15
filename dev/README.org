@@ -1,0 +1,3 @@
+This used to be =src/clj/org/parkerici/rawsugar/dev=, but that means it gets compiled by :aot and we don't really want that. 
+
+To develop as before, put a link in the above dir, but don't check it in.

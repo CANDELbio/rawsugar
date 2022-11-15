@@ -1,0 +1,27 @@
+{:name "Mesmer"
+ :steps
+ [#include "recipes/default-head.edn"
+  
+  {:id :tweak-metadata
+   :doc "https://dataplatform.parkerici.org/datatypes/imaging/mesmer-seg/#rawsugar-data-setup"}
+  
+  {:id :transfer-to-terra
+   :doc "https://dataplatform.parkerici.org/datatypes/imaging/mesmer-seg/#transfer-data-to-terra"
+   :op :sheet-files->terra}
+  
+  ;; Run segementation
+  {:id :run-segementation
+   :doc "https://dataplatform.parkerici.org/datatypes/imaging/mesmer-seg/#run-segmentation"
+   :description "Run segmentation on Terra"}
+  ;; Export from Terra
+  {:id :terra-export
+   :doc "https://dataplatform.parkerici.org/datatypes/imaging/vectra/#export-from-terra-with-terranigma"}
+  ;; Convert to FCS with Mantis
+  {:id :mantis-to-cellengine-fcs
+   :doc "https://dataplatform.parkerici.org/datatypes/imaging/vectra/#check-out-in-mantis-convert-to-fcs"
+   :description "Convert to FCS in mantis and upload to cellengine"}
+  ;; Cellengine gating
+  {:id :gate-in-cellengine
+   :link ["CellEngine" "https://cellengine.com/"]
+   :doc "https://dataplatform.parkerici.org/datatypes/imaging/vectra/#cellengine-gating"}
+  #include "recipes/default-tail.edn" ]}

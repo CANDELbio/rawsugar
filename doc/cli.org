@@ -1,0 +1,334 @@
+#+OPTIONS: html-postamble:nil
+#+TITLE: Rawsugar 3.0 User Guide: Command-line interface
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheet.css" />
+
+
+
+* The CLI
+
+** Installation and use
+
+Releases may be found at https://github.com/ParkerICI/rawsugar/releases/latest
+
+To install:
+
+- Download the latest non-dev release
+- Unzip it
+- =cd= to the resultant directory
+- Try a command, eg 
+
+#+BEGIN_SRC
+./rawsugar list-projects
+#+END_SRC
+
+
+** Login
+
+Operations that change the database will ask you to log in. You do this via =gcloud= [[https://cloud.google.com/sdk/docs/install][(install)]]:
+#+BEGIN_SRC
+gcloud auth application-default login
+#+END_SRC
+
+** Arguments
+
+Most commands take some of =<project>=, =<batch>-, and =<sheet>= arguments. These specify the object to be operated on. If these names have spaces or other special characters, they can be surrounded with quotes.
+
+ =<directory>= and =<file>= arguments can be a local file path or a Google Storage address (=gs://..=).
+
+** Flags
+
+This describes flags that apply to some of the commands.
+
+**** =--verbose= or =-v=
+ Output additional information. Note: you can repeat =-v= multiple times to increase verbosity, although more than 2 probably won՚t get you anything.
+**** =--yes= or =-y=
+ Assume a yes answer to any user yes/no prompts.
+
+**** =--filter <filter>= (or =-f=)
+ For downloads, limit results to rows in the sheet matching the =<filter>= string (eg ~tissue=blood~ or ~treatment=[ipi,nivo]~). This affects both sheet downloads and file downloads (that is, only files linked to matched rows will be downloaded).
+
+**** =--resume= (or =-r=)
+
+ For upload file commands, this will check if the file is already uploaded. Requires extra computation to compute checksums, so may slow things down.
+
+**** =--strings= (or =-s=)
+ For sheet uploads, store all values as strings. 
+
+ By default, things that can be parsed as numbers will be stored as such. This flag will cause all values to be stored as strings. Note: not recommended.
+
+**** =--template <template>= (or =-t=)
+:PROPERTIES:
+:CUSTOM_ID: templates
+:END:
+
+ Template string for naming downloaded files. Templates can include values from metadata columns using a syntax ={colName}=. An example, given that =subject= and =timepoint= are both columns in the associated sheet:
+
+#+BEGIN_SRC
+ file-{subject}-{timepoint}
+#+END_SRC
+
+
+** Commands
+
+*** =help=
+ Prints some help.
+*** =list-projects=
+
+ Lists the project names.
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar list-projects
+ hugo
+ msk-raw
+ pici0002
+#+END_SRC
+
+*** =list-batches=
+
+ Lists a project's batches.
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar list-batches hugi
+...
+#+END_SRC
+
+
+*** =list-sheets <project> <batch>=
+
+ Lists the sheets of a project.
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar list-sheets hugo batch1
+ mmc1.xls.S1A
+ mmc1.xls.S1B
+ mmc1.xls.S1C
+ mmc1.xls.S1D
+ mmc1.xls.S1E
+ mmc2.xlsx.S2A
+ mmc2.xlsx.S2B
+ mmc2.xlsx.S2C
+#+END_SRC
+
+*** =list-columns <project> <batch> <sheet>=
+
+ List the columns of the given sheet.
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar list-columns hugo3 batch2 mmc1.xls.S1A
+ Accession ID, RNAseq
+ AccessionID, WES
+ Age
+ Anatomical Location
+ BRAF
+ ...
+ WES
+ irRECIST
+#+END_SRC
+
+
+*** =list-column-values <project> <batch> <sheet> <column>=
+ Flags: =--filter=
+
+ Lists the distinct values found in the given column. 
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar list-column-values hugo3 mmc1.xls.S1A irRECIST
+ Complete Response
+ Partial Response
+ Progressive Disease
+#+END_SRC
+
+*** =list-files <project>  <batch> [<sheet>]=
+
+ List files associated with a project or with a particular sheet.
+ Example:
+#+BEGIN_SRC 
+ > rawsugar list-files test batch1
+ bar.txt
+ foo.txt
+#+END_SRC
+
+*** =add-project <project>=
+
+ Create a new project. Usually this is unnecessary; projects will be created on demand (after querying the user).
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar add-project pici00023
+ [main] INFO org.parkerici.rawsugar.cli - Created
+#+END_SRC
+
+*** =add-batch <project> <batch>=
+
+ Create a new batch.
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar add-batch pici00023 personalis
+#+END_SRC
+
+
+*** =upload <project>  <batch> <sheetfile> [<directory>]=
+
+ Upload the given spreadsheet file to =<project>=. If any of the sheets have a =fileName= column and =<directory>= is specified, upload and link the associated files. Directory can be a local file path or a Google Storage address (=gs://..=).
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar upload pici0002 personalis test/resources/proj0/meta.tsv  test/resources/proj0/files/
+ [main] INFO org.parkerici.rawsugar.blob - Uploading test/resources/proj0/files/bar.txt
+ [main] INFO org.parkerici.rawsugar.blob - Uploading test/resources/proj0/files/foo.txt
+ [main] INFO org.parkerici.rawsugar.cli - upload complete
+#+END_SRC
+
+*** =upload-sheets <project>  <batch> <sheetfile>=
+ Upload the given spreadsheet file to =<project>=.
+
+#+BEGIN_SRC 
+ > rawsugar upload-sheets pici0002 personalis  test/resources/proj0/meta.tsv
+ [main] INFO org.parkerici.rawsugar.cli - upload complete
+#+END_SRC
+
+
+*** =upload-files <project> <batch> <directory> [<sheet> [<column>]]=
+ Flags: -r
+
+ Upload files to a project and, if =sheet= and =column= are supplied, try to match them with the rows of the sheet using fuzzy matching of column value to filenames (experimental feature).
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar upload-files pici0002 personalis test/resources/proj0/files/ meta.tsv a
+ [main] INFO org.parkerici.rawsugar.blob - Uploading test/resources/proj0/files/bar.txt
+ [main] INFO org.parkerici.rawsugar.blob - Uploading test/resources/proj0/files/foo.txt
+ [main] INFO org.parkerici.rawsugar.blob - Uploading test/resources/proj0/files/unmatched.txt
+ [main] INFO org.parkerici.rawsugar.sheet - Matched /files/bar.txt with row bar
+ [main] INFO org.parkerici.rawsugar.sheet - Matched /files/foo.txt with row foo
+ [main] INFO org.parkerici.rawsugar.cli - Upload complete
+#+END_SRC
+
+
+*** =update <project>  <batch> <sheet> <sheetfile>=
+
+ Update* the given sheet based on sheetfile. The file must contain a single sheet with a =row-id= column, which is matched against the existing sheet rows.
+
+Note: in Rawsugar 3, sheets are immutable, so the "update" actually creates a new derived sheet. 
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar update pici0002 personalis meta.tsv new-meta.tsv
+[main] INFO org.parkerici.rawsugar.cli - Upload complete
+[main] INFO New sheet created: meta.tsv+update
+#+END_SRC
+
+#+BEGIN_COMMENT
+TODO should give more specific feedback, like rows matched or something.
+#+END_COMMENT
+
+*** =download-files  <directory> <project>  [<batch> [<sheet>]]=
+ Flags: -f -t
+
+ Downloads the specified files, outputs the sheet. Note that sheet is optional (but required for use of filter or template options)
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar download-files ./data/pici0002-files pici0002 personalis 
+ [main] INFO org.parkerici.rawsugar.blob - Downloading somebigfile.tif
+ [main] INFO org.parkerici.rawsugar.blob - Downloading thenextbigfile.tif
+ ...
+#+END_SRC
+
+
+*** =download <project>  <batch> [sheet] <directory>=
+
+<i>This command no longer exists, since it was basically the same as =download-files=.
+
+
+*** =download-sheet  <project>  <batch> <sheet>]==
+
+Download the specified sheet to standard output (that is, you probably want to say something like)
+#+BEGIN_SRC 
+ > rawsugar download-sheet  pici0002 personalis  mysheet > mysheet.tsv
+#+END_SRC
+
+
+*** =delete <project>  [<batch>] [<sheet>]=
+
+ This deletes the named sheet, batch, or the entire project. Use with caution!
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar delete pici0002
+ [main] INFO org.parkerici.rawsugar.cli - Project pici0002 deleted.
+#+END_SRC
+
+*** =delete-files <project> <batch> [sheet]=
+ Flags: -f
+
+ Example:
+#+BEGIN_SRC 
+ > rawsugar delete-files pici0002 personalis -f “assayType=wes”
+
+#+END_SRC
+
+*** =login <username>=
+ Log in. Currently there is no security or validation; the username is just used for recording history changes.
+
+*** =history <project>=
+ Print the history of changes to this project, including the dates, user, Datomic transaction of each operation.
+
+
+
+** Glue
+
+ Commands for the movement of files and sheets between Rawsugar and other components of the translational architecture.
+
+*** =upload-from-cellengine <ce-username> <ce-password> <ce-experiment-name> <rs-project> <rs-batch> [--resume --damp-run]=
+
+ flags: --resume --damp-run
+
+ Passes cellengine annotations as sheet to Rawsugar-PROJECT, then downloads Fcs files from experiment and uploads to project and matches to newly made sheet of annotations.
+ Special characters in cellengine passwords may require passing =<ce-password>= as an environment variable.
+
+ Example:
+#+BEGIN_SRC
+ > rawsugar upload-from-cellengine user@parkerici.org $cellengPassword APITEST rktest batch1 --resume
+ [main] INFO org.eclipse.jetty.util.log - Logging initialized @2010ms to org.eclipse.jetty.util.log.Slf4jLog
+ 19-07-11 00:05:18 INFO Rawsugar version 0.0.104
+ 19-07-11 00:05:24 INFO Uploading APITEST_cellengine.csv
+ 19-07-11 00:05:25 INFO Downloading test.fcs
+ 19-07-11 00:05:26 INFO Uploading test.fcs
+ 19-07-11 00:05:28 INFO Downloading truth.fcs
+ 19-07-11 00:05:29 INFO Uploading truth.fcs
+ 19-07-11 00:05:32 INFO Downloading working.fcs
+ 19-07-11 00:05:33 INFO Uploading working.fcs
+#+END_SRC
+
+
+*** =rawsugar-to-cellengine <ce-username> <ce-password> <ce-project> <rs-project> <rs-batch> <rs-sheet>=
+
+ Take a sheet from rawsugar and uploads to cellengine as a new experiment.
+ Creates a new experiment, downloads fcs files and uploads them to the experiment.  Pulls the metadata from the sheet and attaches to the fcs files in the experiment as annotations
+
+ Example:
+#+BEGIN_SRC
+ > rawsugar rawsugar-to-cellengine user@parkerici.org $cellengPassword rktest14 rktest batch1 APITEST_cellengine.csv
+ [main] INFO org.eclipse.jetty.util.log - Logging initialized @2567ms to org.eclipse.jetty.util.log.Slf4jLog
+ 19-07-11 00:07:44 INFO Rawsugar version 0.0.104
+ 19-07-11 00:07:48 INFO Downloading working.fcs to ./working.fcs
+ 19-07-11 00:07:51 INFO Uploading working.fcs
+ 19-07-11 00:07:53 INFO Downloading truth.fcs to ./truth.fcs
+ 19-07-11 00:07:56 INFO Uploading truth.fcs
+ 19-07-11 00:07:57 INFO Downloading test.fcs to ./test.fcs
+ 19-07-11 00:07:58 INFO Uploading test.fcs
+ 19-07-11 00:07:59 INFO Transferring Annotations
+ 19-07-11 00:07:59 INFO Uploading Annotation: truth.fcs
+ 19-07-11 00:07:59 INFO Uploading Annotation: working.fcs
+ 19-07-11 00:07:59 INFO Uploading Annotation: test.fcs
+ 19-07-11 00:07:59 INFO DONE Transferring Annotations
+#+END_SRC
+
+

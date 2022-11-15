@@ -1,0 +1,13 @@
+{:proto
+ {:a 1
+  :b 2
+  :c {:d {:e 23}}}
+ :derived
+ [#proto [[:proto]
+         {:b 23
+          :c {:x 99} }]
+  #proto [[:proto]
+         {:a 11
+          :c {:d 23} }]
+  ]
+ }
