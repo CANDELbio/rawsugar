@@ -124,7 +124,8 @@ The CLJS app is now built with shadow-cljs, see https://shadow-cljs.github.io/do
 
 ### One-time setup
 
-TODO install npm, shadow-cljs	
+    brew install npm
+	npm install -g shadow
 
     npm install
 

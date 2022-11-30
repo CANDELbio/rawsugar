@@ -8,20 +8,13 @@
 
 * Introduction
 
-Rawsugar is PICI՚s tool for raw data ingestion, storage, and retrieval. It includes a Datomic backend, and two alternate frontends: a CLI and a [[http://rawsugar.parkerici.org][web interface]]. 
+Rawsugar is part of the [[https://github.com/CANDELbio][CANDEL Platform]] and provides tools for raw data ingestion, storage, and retrieval . It includes a Datomic backend, and two alternate frontends: a CLI and a [[http://rawsugar.parkerici.org][web interface]]. 
 
 
 * Table of Contents
 - [[./general.org][Generalities]]
 - [[./web-ui.org][Web interface]]
 - [[./cli.org][Command-line interface]]
-
-
-
-** Other documents
-
-See [[https://dataplatform.parkerici.org/rawdata/raw-data-pici-trials/][RawSugar Protocol for PICI Trial Data]] for information on how to use RawSugar for PICI clinical trials.
-
 
 ** Changes from v2.0
 
@@ -39,7 +32,7 @@ The web interface has also been overhauled. The major changes;
 - Projects and batches have their own pages
 - File matching no longer is done on a separate page; instead it uses a flyout pane available from sheet view
 - Ops machinery has an improved UI with interdependent selectors
-- Bold new look with PICI branding
+- Bold new look 
 
 
 
