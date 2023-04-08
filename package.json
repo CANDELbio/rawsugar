@@ -75,7 +75,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.20.10"
+    "shadow-cljs": "^2.22.10"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
