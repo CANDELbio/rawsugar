@@ -19,9 +19,8 @@
                  [org.eclipse.jetty/jetty-util "9.4.12.v20180830"]
 
                  [org.slf4j/slf4j-simple "1.7.29"]                   ;required to turn off warning
-                 [org.parkerici/multitool "0.0.25"]
-                 [org.parkerici/alzabo "0.2.9" :exclusions [re-frame]]
-;                 [org.parkerici/terranigma "0.1.2"]
+                 [org.candelbio/multitool "0.1.0"]
+                 [org.candelbio/alzabo "1.0.0" :exclusions [re-frame]]
                  [com.taoensso/timbre "4.10.0"]
                  [compojure "1.6.1" :exclusions [ring.core ring.codec]]
                  [ring "1.8.0"]
@@ -72,8 +71,6 @@
                  [oauthentic "1.0.1"]
                  [slingshot "0.12.2"]
                  [thheller/shadow-cljs "2.20.10"] ;TODO maybe only in dev profile
-;                 [ag-grid-enterprise "25.2.0"]
-;                 [ag-grid-react "25.2.0"]
                  ]
 
 
@@ -92,8 +89,8 @@
 
   :min-lein-version "2.5.3"
 
-  :main ^:skip-aot org.parkerici.rawsugar.cli
-  :ring {:handler org.parkerici.rawsugar.handler/app}
+  :main ^:skip-aot org.candelbio.rawsugar.cli
+  :ring {:handler org.candelbio.rawsugar.handler/app}
 
   :source-paths ["src/cljc" "src/clj" "src/cljs"] 
   :test-paths ["test/clj"]
