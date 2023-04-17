@@ -5,15 +5,15 @@
 
 * The web interface
 
-The web interface to RawSugar is at http://rawsugar.parkerici.org. There is a development version at http://dev-rawsugar.parkerici.org; this is a good place to explore or experiment. Both sites require authentication through your PICI Google account.
+The web interface supports using Rawsugar in a hosted (SaaS) mode. Directions for deploying such a service are at TODO.
 
 You can also run the web server locally via the CLI =insecure-server= command. There is probably no reason for non-developers to do this.
 
-The web app should be largely self-explanatory. Some of the less obvious parts are discussed below.
+The web app should be largely self-explanatory. Some of the less obvious parts are discussed below. Images are from the PICI version and may be different for your local version.
 
 ** Login
 
-The first page you see will be the login page. This page will let you authenticate using your PICI Google acocunt. 
+The first page you see will be the login page. 
 
 
 #+attr_html: :width 1000px#+attr_html: :width 1000px
@@ -155,4 +155,4 @@ Produces this graph on the batch page.
 [[file:images/Screen_Shot_2020-10-22_at_10.55.11_PM.png]]
 
 Note that aside from the specified properties, the dashboard graph also indicates which datapoints (rows) have associated files, using shape.
-ie
+

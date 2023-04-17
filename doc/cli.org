@@ -8,7 +8,7 @@
 
 ** Installation and use
 
-Releases may be found at https://github.com/ParkerICI/rawsugar/releases/latest
+Releases may be found at https://github.com/CANDELbio/rawsugar/releases/latest
 
 To install:
 
@@ -295,7 +295,7 @@ Download the specified sheet to standard output (that is, you probably want to s
 
  Example:
 #+BEGIN_SRC
- > rawsugar upload-from-cellengine user@parkerici.org $cellengPassword APITEST rktest batch1 --resume
+ > rawsugar upload-from-cellengine user@lab.org $cellengPassword APITEST rktest batch1 --resume
  [main] INFO org.eclipse.jetty.util.log - Logging initialized @2010ms to org.eclipse.jetty.util.log.Slf4jLog
  19-07-11 00:05:18 INFO Rawsugar version 0.0.104
  19-07-11 00:05:24 INFO Uploading APITEST_cellengine.csv
@@ -315,7 +315,7 @@ Download the specified sheet to standard output (that is, you probably want to s
 
  Example:
 #+BEGIN_SRC
- > rawsugar rawsugar-to-cellengine user@parkerici.org $cellengPassword rktest14 rktest batch1 APITEST_cellengine.csv
+ > rawsugar rawsugar-to-cellengine user@lab.org $cellengPassword rktest14 rktest batch1 APITEST_cellengine.csv
  [main] INFO org.eclipse.jetty.util.log - Logging initialized @2567ms to org.eclipse.jetty.util.log.Slf4jLog
  19-07-11 00:07:44 INFO Rawsugar version 0.0.104
  19-07-11 00:07:48 INFO Downloading working.fcs to ./working.fcs

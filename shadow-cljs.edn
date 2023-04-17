@@ -5,5 +5,5 @@
         :compiler-options {:infer-externs true}
         :output-dir "resources/public/cljs-out"
         :asset-path "/cljs-out"         ;webserver path
-        :modules {:dev-main {:entries [org.parkerici.rawsugar.core]}}}}}
+        :modules {:dev-main {:entries [org.candelbio.rawsugar.core]}}}}}
 

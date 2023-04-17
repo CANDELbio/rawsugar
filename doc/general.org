@@ -5,10 +5,7 @@
 
 * Support
 
-Users should feel free to reach out to engineering for support. Questions, suggestions, and bug reports are always welcome. 
-
-Probably the best channel is the #rawsugar Slack channel, but you can also [[https://github.com/ParkerICI/rawsugar/issues/new][file an issue on Github]].
-
+File a ticket at https://github.com/CANDELbio/rawsugar/issues/new
 
 * Data Schema
 

@@ -8,9 +8,7 @@ It includes a command-line interface (CLI) and a web interface. Please see the  
 
 This repo has been forked from the original PICI repo. 
 
-There's a major change in the build, which is only half-done: rather than use cljsjs for external javascript libraries, Rawsugar now gets them from npm. This change frees us from having to build and maintain cljsjs packages, but it also requires that the cljs application be built using shadow-cljs, which replaces figwheel-main.
-
-In the current state, this is halfway done, and needs to be cleaned up, but you can build an operating cljs client with shdow-cljs (see below).
+There's a major change in the build: rather than use cljsjs for external javascript libraries, Rawsugar now gets them from npm, which necessitates using shadow-cljs as the build tool,
 
 # Use
 
@@ -118,13 +116,14 @@ java -jar target/rawsugar-0.1.0-SNAPSHOT-standalone.jar list-projects
 
 ```
 
-## shadow-cljs 
+## Build frontend
 
-The CLJS app is now built with shadow-cljs, see https://shadow-cljs.github.io/docs/UsersGuide.html
+The frontend app is now built with shadow-cljs, see https://shadow-cljs.github.io/docs/UsersGuide.html
 
 ### One-time setup
 
-TODO install npm, shadow-cljs	
+    brew install npm
+	npm install -g shadow-cljs
 
     npm install
 
@@ -132,6 +131,8 @@ TODO install npm, shadow-cljs
 
     shadow-cljs compile app
 	
+### Development
+
 To develop with automatic reload (note: doesn't work due to some dependency conflict thing, but it should. TODO)
 
     shadow-cljs watch app
