@@ -82,7 +82,7 @@
                           ]
                       aug-ent))
             ]
-        ;; TODO HHH this doesn't respect resume option, not sure it should, argh 
+        ;; TODO this doesn't respect resume option, not sure it should, argh 
         (if existing
           (if (= hash (:file/hash existing))
             (do

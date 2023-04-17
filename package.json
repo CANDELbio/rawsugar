@@ -82,13 +82,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ParkerICI/rawsugar.git"
+    "url": "git+https://github.com/candelbio/rawsugar.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ParkerICI/rawsugar/issues"
+    "url": "https://github.com/candelbio/rawsugar/issues"
   },
-  "homepage": "https://github.com/ParkerICI/rawsugar#readme"
+  "homepage": "https://github.com/candelbio/rawsugar"
 }

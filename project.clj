@@ -4,7 +4,8 @@
               :sign-releases false
               :username :env/github_user
               :password :env/github_password}]]
-  :dependencies [;; server side
+  :dependencies [
+                 ;; backend
                  [org.clojure/clojure "1.10.3"] ;back off from 1.11, update-vals conflic
                  [org.clojure/data.csv "0.1.4"]
                  [org.clojure/tools.cli "1.0.206"]
@@ -45,8 +46,6 @@
                  [trptcolin/versioneer "0.2.0"]
                  [com.cemerick/url "0.1.1"]
                  [metasoarous/oz "1.6.0-alpha6"  ; warning higher versions have dep problems
-;                 [metasoarous/oz "1.6.0-alpha36"
-;                 [metasoarous/oz "2.0.0-alpha5"
                   :exclusions [com.google.errorprone/error_prone_annotations
                                com.taoensso/encore]]
                  ;; Necessary to run in Java > 8, see https://stackoverflow.com/questions/43574426/how-to-resolve-java-lang-noclassdeffounderror-javax-xml-bind-jaxbexception-in-j
@@ -55,13 +54,12 @@
                  [com.sun.xml.bind/jaxb-impl "2.2.11"]
                  [javax.activation/activation "1.1.1"]
 
-                 ;; client side
+                 ;; frontend
                  [org.clojure/clojurescript "1.11.60"]
                  [com.google.javascript/closure-compiler-unshaded "v20220803"]
                  [reagent "0.10.0"]
                  [re-frame "0.12.0"]
                  [re-com "2.13.2"]
-;;                  [cljsjs/react-select "2.4.4-0"]
                  [com.cemerick/url "0.1.1"]
                  [com.andrewmcveigh/cljs-time "0.5.2"]
                  [inflections "0.13.2"]
@@ -72,7 +70,6 @@
                  [slingshot "0.12.2"]
                  [thheller/shadow-cljs "2.20.10"] ;TODO maybe only in dev profile
                  ]
-
 
   ;; Trying to turn off spurious log message. Doesn't work – flags are set but no effect
   :jvm-opts ["-Dorg.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.StdErrLog"
@@ -111,11 +108,7 @@
                    [clj-http "3.9.1"]
                    ]
     :env {:tier "test"
-          :gcs-bucket "pici-rawsugar-dev"
-          :gcs-project "pici-dev"
-          :autorespond? "y"
-          :datomic-endpoint "localhost:8999"
-          :datomic-db-name "rawsugar" 
+          ;; Add config for test backend
           }
     }
    :dev
@@ -130,12 +123,9 @@
     }
    :uberjar
    {
-    ;; TODO don't want the following here but can't build without it? I'm baffled.
+    ;; TODO don't want the following here but can't build without it? 
     :dependencies [[day8.re-frame/re-frame-10x "1.5.0"]
                    ]
-    ;; :prep-tasks ["fig:build-dev" "fig:build-prod" "compile"]
-    ;; defining the production env here does not work due to environ limitations. THe configs have
-    ;; to be passed as shell vars, hance the rawsugar bash script.
     :omit-source true
     :aot :all                           ;excessive but catches bugs early
     }
