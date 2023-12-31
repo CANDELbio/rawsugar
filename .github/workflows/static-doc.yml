@@ -19,10 +19,20 @@ permissions:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  ccompile-user-guide.shancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+ 
+      - name: install emacs
+        run: brew install emacs
+
+      - name: gen html
+        run: bin/compile-user-guide.sh
+
   deploy:
     environment:
       name: github-pages
